@@ -1,1 +1,4 @@
 .DS_store
+
+vault_pass.txt
+group_vars/all/secure.yaml

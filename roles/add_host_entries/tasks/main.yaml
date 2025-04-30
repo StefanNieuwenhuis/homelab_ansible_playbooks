@@ -4,4 +4,4 @@
       # Kubernetes The Hard Way
     dest: "/etc/hosts"
     mode: '0644'
-  delegate_to: "{{ ansible_host }}"
+  delegate_to: "{{ hostvars[host]['inventory_hostname'] }}"

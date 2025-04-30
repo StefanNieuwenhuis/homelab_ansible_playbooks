@@ -1,1 +1,0 @@
-host_entries: "{{ groups['cluster'] | map('extract', hostvars, ['ansible_host', 'hostname', 'fqdn']) | map('combine', {'ip': item.ansible_host, 'hostname': item.hostname, 'fqdn': item.fqdn}) | list }}"

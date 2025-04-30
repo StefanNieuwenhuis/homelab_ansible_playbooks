@@ -1,8 +1,11 @@
-- name: Ensure cert directory exists
+- name: Ensure cert directory exists (on localhost)
   ansible.builtin.file:
     path: "{{ cert_dir }}"
     state: directory
     mode: '0755'
+    recurse: yes
+  delegate_to: localhost
+  run_once: true
 
 - name: Copy ca.conf
   ansible.builtin.copy:

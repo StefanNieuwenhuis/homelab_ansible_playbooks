@@ -1,0 +1,25 @@
+- name: Set system hostname
+  ansible.builtin.hostname:
+    name: "{{ hostvars[inventory_hostname]['hostname'] }}"
+
+- name: Ensure /etc/hosts has correct 127.0.0.1 line
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1\\t{{ hostvars[inventory_hostname]['fqdn'] }} {{ hostvars[inventory_hostname]['hostname'] }}"
+
+- name: Manage cluster nodes block in /etc/hosts
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED CLUSTER HOSTS"
+    block: "{{ lookup('template', 'hosts_block.j2') }}"
+    create: yes
+
+- name: Get FQDN of machines from the cluster and display it
+  ansible.builtin.shell: "hostname --fqdn"
+  register: fqdn_results
+  changed_when: false
+
+- name: Display FQDN of machine
+  ansible.builtin.debug:
+  msg: "FQDN of {{ inventory_hostname }} is {{ fqdn_results.stdout }}"

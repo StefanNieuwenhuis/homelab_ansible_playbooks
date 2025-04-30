@@ -1,0 +1,4 @@
+# Cluster nodes managed by Ansible
+{% for host in groups['cluster'] %}
+{{ hostvars[host]['inventory_hostname'] }} {{ hostvars[host]['fqdn'] }} {{ hostvars[host]['hostname'] }}
+{% endfor %}

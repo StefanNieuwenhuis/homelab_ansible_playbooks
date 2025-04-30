@@ -1,3 +1,4 @@
 - import_playbook: plays/distribute_ssh_keys.yaml
 - import_playbook: plays/configure_hostnames.yaml
 - import_playbook: plays/add_host_entries.yaml
+- import_playbook: plays/provision_tls_certs.yaml

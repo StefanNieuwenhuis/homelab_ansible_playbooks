@@ -1,3 +1,6 @@
+- name: Ensure cert dir exists
+  import_tasks: prepare_cert_dir.yaml
+
 - name: Include CA generation tasks
   import_tasks: generate_ca.yaml
 

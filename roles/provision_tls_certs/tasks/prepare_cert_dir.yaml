@@ -1,0 +1,7 @@
+- name: Create directory for TLS certificate generation
+  ansible.builtin.file:
+    path: "{{ cert_dir }}"
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+  run_once: true

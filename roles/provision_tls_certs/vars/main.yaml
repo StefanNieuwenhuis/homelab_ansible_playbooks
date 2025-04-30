@@ -1,4 +1,4 @@
-cert_list:
+certs:
   - admin
   - node-0
   - node-1

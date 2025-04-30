@@ -17,13 +17,9 @@
     user: root
     key: "{{ pubkey['content'] | b64decode }}"
 
-- name: Verify key-based SSH works
-  hosts: cluster
-  gather_facts: false
-  tasks:
-    - name: Run hostname to confirm access
-      ansible.builtin.shell: hostname
-      register: result
+- name: Run hostname to confirm access
+  ansible.builtin.shell: hostname
+  register: result
 
 - name: Display hostname result
   ansible.builtin.debug:

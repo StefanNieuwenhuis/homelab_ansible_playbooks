@@ -6,6 +6,17 @@
   args:
     creates: "{{ ssh_key_path }}"
 
+- name: Ensure public key file exists
+  delegate_to: localhost
+  ansible.builtin.stat:
+    path: "{{ ssh_public_key_path }}"
+  register: key_file
+
+- name: Fail if public key doesn't exist
+  ansible.builtin.fail:
+    msg: "Public key file not found!"
+  when: not key_file.stat.exists
+
 - name: Fetch public key from localhost
   delegate_to: localhost
   ansible.builtin.slurp:
@@ -14,13 +25,5 @@
 
 - name: Authorize SSH key on remote nodes
   ansible.builtin.authorized_key:
-    user: "{{ssh_target_user}}"
+    user: "{{ ssh_target_user }}"
     key: "{{ pubkey['content'] | b64decode }}"
-
-- name: Run hostname to confirm access
-  ansible.builtin.shell: hostname
-  register: result
-
-- name: Display hostname result
-  ansible.builtin.debug:
-    msg: "Connected to {{ inventory_hostname }} → {{ result.stdout }}"

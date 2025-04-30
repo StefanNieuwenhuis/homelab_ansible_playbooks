@@ -14,7 +14,7 @@
 
 - name: Authorize SSH key on remote nodes
   ansible.builtin.authorized_key:
-    user: root
+    user: "{{ssh_target_user}}"
     key: "{{ pubkey['content'] | b64decode }}"
 
 - name: Run hostname to confirm access

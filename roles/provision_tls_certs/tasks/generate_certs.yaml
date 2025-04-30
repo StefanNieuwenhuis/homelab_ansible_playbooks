@@ -1,0 +1,14 @@
+- name: Generate private keys and CSRs for Kubernetes components
+  ansible.builtin.shell: |
+    openssl genrsa -out {{ item }}.key 4096
+    openssl req -new -key {{ item }}.key -sha256 \
+      -config ca.conf -section {{ item }} \
+      -out {{ item }}.csr
+    openssl x509 -req -days 3653 -in {{ item }}.csr \
+      -copy_extensions copyall -sha256 \
+      -CA ca.crt -CAkey ca.key -CAcreateserial \
+      -out {{ item }}.crt
+  args:
+    chdir: "{{ cert_dir }}"
+    creates: "{{ cert_dir }}/{{ item }}.crt"
+  loop: "{{ cert_list }}"

@@ -1,0 +1,5 @@
+- name: Provision and distribute TLS certificates
+  hosts: cluster
+  become: true
+  roles:
+    - provision_tls_certs

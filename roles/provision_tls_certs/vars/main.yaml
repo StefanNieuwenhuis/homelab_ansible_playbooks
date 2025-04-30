@@ -1,0 +1,10 @@
+cert_list:
+  - admin
+  - node-0
+  - node-1
+  - kube-proxy
+  - kube-scheduler
+  - kube-controller-manager
+  - kube-api-server
+  - service-accounts
+cert_dir: /etc/kubernetes/pki

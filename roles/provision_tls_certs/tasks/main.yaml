@@ -1,0 +1,8 @@
+- name: Include CA generation tasks
+  import_tasks: generate_ca.yaml
+
+- name: Include certificate generation tasks
+  import_tasks: generate_certs.yaml
+
+- name: Include certificate distribution tasks
+  import_tasks: distribute_certs.yaml

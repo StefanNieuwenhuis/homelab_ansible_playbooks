@@ -1,0 +1,27 @@
+- name: Ensure cert directory exists
+  ansible.builtin.file:
+    path: "{{ cert_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy ca.conf
+  ansible.builtin.copy:
+    src: ca.conf
+    dest: "{{ cert_dir }}/ca.conf"
+
+- name: Generate CA key
+  ansible.builtin.command:
+    cmd: openssl genrsa -out ca.key 4096
+    chdir: "{{ cert_dir }}"
+  args:
+    creates: "{{ cert_dir }}/ca.key"
+
+- name: Generate CA certificate
+  ansible.builtin.command:
+    cmd: >
+      openssl req -x509 -new -sha512 -noenc
+      -key ca.key -days 3653
+      -config ca.conf -out ca.crt
+    chdir: "{{ cert_dir }}"
+  args:
+    creates: "{{ cert_dir }}/ca.crt"

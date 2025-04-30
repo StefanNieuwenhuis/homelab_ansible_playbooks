@@ -1,0 +1,42 @@
+- name: Copy node certs to nodes
+  when: inventory_hostname in ['node-0', 'node-1']
+  block:
+    - name: Ensure kubelet directory exists
+      ansible.builtin.file:
+        path: /var/lib/kubelet/
+        state: directory
+        mode: '0755'
+
+    - name: Copy CA cert to node
+      ansible.builtin.copy:
+        src: "{{ cert_dir }}/ca.crt"
+        dest: /var/lib/kubelet/ca.crt
+        remote_src: yes
+
+    - name: Copy node cert
+      ansible.builtin.copy:
+        src: "{{ cert_dir }}/{{ inventory_hostname }}.crt"
+        dest: /var/lib/kubelet/kubelet.crt
+        remote_src: yes
+
+    - name: Copy node key
+      ansible.builtin.copy:
+        src: "{{ cert_dir }}/{{ inventory_hostname }}.key"
+        dest: /var/lib/kubelet/kubelet.key
+        remote_src: yes
+
+- name: Copy master certs to control plane node
+  when: inventory_hostname == 'server'
+  block:
+    - name: Copy master TLS files
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/root/"
+        remote_src: yes
+      loop:
+        - "{{ cert_dir }}/ca.key"
+        - "{{ cert_dir }}/ca.crt"
+        - "{{ cert_dir }}/kube-api-server.key"
+        - "{{ cert_dir }}/kube-api-server.crt"
+        - "{{ cert_dir }}/service-accounts.key"
+        - "{{ cert_dir }}/service-accounts.crt"

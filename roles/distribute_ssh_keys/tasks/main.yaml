@@ -6,6 +6,10 @@
   args:
     creates: "{{ ssh_key_path }}"
 
+- name: Debug ssh_target_user
+  ansible.builtin.debug:
+    msg: "SSH target user is: {{ ssh_target_user }}"
+
 - name: Display SSH key paths
   ansible.builtin.debug:
     msg: "SSH Key Path: {{ ssh_key_path }}, SSH Public Key Path: {{ ssh_public_key_path }}"

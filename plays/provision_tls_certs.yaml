@@ -1,5 +1,6 @@
 - name: Provision and distribute TLS certificates
-  hosts: cluster
+  hosts: localhost
+  connection: local
   become: true
   roles:
     - provision_tls_certs

@@ -2,7 +2,7 @@
   ansible.builtin.blockinfile:
     path: /etc/hosts
     marker: "# {mark} Kubernetes The Hard Way"
-    block: "{{ lookup('template', 'hosts_entries.j2') }}"
+    block: "{{ lookup('template', 'hosts_lookup_table.j2') }}"
     create: yes
 
 - name: Get Hostname of machines from the cluster and display it
@@ -10,6 +10,11 @@
   register: hostname_entry_results
   changed_when: false
 
-- name: Display Hostname of machine
+- name: Show updated /etc/hosts on all cluster nodes
+  ansible.builtin.shell: "grep -A 5 'Kubernetes The Hard Way' /etc/hosts"
+  register: hosts_grep
+  changed_when: false
+
+- name: Debug contents of added /etc/hosts block
   ansible.builtin.debug:
-    msg: "FQDN is {{ ansible_hostname_entry_results }}"
+    msg: "{{ hosts_grep.stdout_lines }}"

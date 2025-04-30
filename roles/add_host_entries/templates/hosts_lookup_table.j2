@@ -1,0 +1,4 @@
+# Kubernetes The Hard Way
+{% for host in groups['cluster'] %}
+{{ hostvars[host]['ansible_host'] }} {{ hostvars[host]['fqdn'] }} {{ hostvars[host]['hostname'] }}
+{% endfor %}

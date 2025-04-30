@@ -12,4 +12,4 @@
 
 - name: Display Hostname of machine
   ansible.builtin.debug:
-    msg: "FQDN is {{ ansible_hostname_entry }}"
+    msg: "FQDN is {{ ansible_hostname_entry_results }}"

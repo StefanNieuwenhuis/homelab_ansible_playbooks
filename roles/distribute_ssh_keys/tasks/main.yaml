@@ -6,6 +6,10 @@
   args:
     creates: "{{ ssh_key_path }}"
 
+- name: Display SSH key paths
+  ansible.builtin.debug:
+    msg: "SSH Key Path: {{ ssh_key_path }}, SSH Public Key Path: {{ ssh_public_key_path }}"
+
 - name: Ensure public key file exists
   delegate_to: localhost
   ansible.builtin.stat:

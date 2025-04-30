@@ -1,0 +1,36 @@
+- name: Generate and distribute SSH keys
+  hosts: cluster
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Ensure SSH key pair exists on control node
+      delegate_to: localhost
+      ansible.builtin.command: >
+        ssh-keygen -t rsa -b 4096 -f "{{ ssh_key_path }}"
+        -N ""
+      args:
+        creates: "{{ ssh_key_path }}"
+
+    - name: Fetch public key from localhost
+      delegate_to: localhost
+      ansible.builtin.slurp:
+        src: "{{ ssh_public_key_path }}"
+      register: pubkey
+
+    - name: Authorize SSH key on remote nodes
+      ansible.builtin.authorized_key:
+        user: root
+        key: "{{ pubkey['content'] | b64decode }}"
+
+    - name: Verify key-based SSH works
+      hosts: cluster
+      gather_facts: false
+      tasks:
+        - name: Run hostname to confirm access
+          ansible.builtin.shell: hostname
+          register: result
+
+    - name: Display hostname result
+      ansible.builtin.debug:
+        msg: "Connected to {{ inventory_hostname }} → {{ result.stdout }}"

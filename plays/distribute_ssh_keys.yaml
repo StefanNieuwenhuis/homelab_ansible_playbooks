@@ -1,0 +1,6 @@
+- name: Generate and distribute SSH keys
+  hosts: cluster
+  become: true
+  gather_facts: false
+  roles:
+    - distribute_ssh_keys

@@ -1,0 +1,5 @@
+- name: Configure hostnames and /etc/hosts
+  hosts: cluster
+  become: true
+  roles:
+    - configure_hostnames

@@ -22,4 +22,4 @@
 
 - name: Display FQDN of machine
   ansible.builtin.debug:
-  msg: "FQDN of {{ inventory_hostname }} is {{ fqdn_results.stdout }}"
+    msg: "FQDN is {{ ansible_fqdn }}"

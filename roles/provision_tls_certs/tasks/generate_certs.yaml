@@ -1,14 +1,28 @@
-- name: Generate private keys and CSRs for Kubernetes components
-  ansible.builtin.shell: |
-    openssl genrsa -out {{ item }}.key 4096
-    openssl req -new -key {{ item }}.key -sha256 \
-      -config ca.conf -section {{ item }} \
-      -out {{ item }}.csr
-    openssl x509 -req -days 3653 -in {{ item }}.csr \
-      -copy_extensions copyall -sha256 \
-      -CA ca.crt -CAkey ca.key -CAcreateserial \
-      -out {{ item }}.crt
-  args:
+- name: Generate private keys for Kubernetes components
+  ansible.builtin.command:
+    cmd: "openssl genrsa -out {{ item }}.key 4096"
     chdir: "{{ cert_dir }}"
-    creates: "{{ cert_dir }}/{{ item }}.crt"
-  loop: "{{ cert_list }}"
+  loop: "{{ certs }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Generate CSR files
+  ansible.builtin.command:
+    cmd: >-
+      openssl req -new -key {{ item }}.key -sha256
+      -config ca.conf -section {{ item }} -out {{ item }}.csr
+    chdir: "{{ cert_dir }}"
+  loop: "{{ certs }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Generate signed certificates
+  ansible.builtin.command:
+    cmd: >-
+      openssl x509 -req -days 3653 -in {{ item }}.csr
+      -copy_extensions copyall -sha256 -CA ca.crt
+      -CAkey ca.key -CAcreateserial -out {{ item }}.crt
+    chdir: "{{ cert_dir }}"
+  loop: "{{ certs }}"
+  delegate_to: localhost
+  run_once: true

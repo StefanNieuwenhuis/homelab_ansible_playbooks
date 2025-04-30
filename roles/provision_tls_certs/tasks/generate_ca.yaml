@@ -1,4 +1,4 @@
-- name: Ensure cert directory exists (on localhost)
+- name: Ensure certificate output directory exists
   ansible.builtin.file:
     path: "{{ cert_dir }}"
     state: directory
@@ -7,24 +7,26 @@
   delegate_to: localhost
   run_once: true
 
-- name: Copy ca.conf
+- name: Copy ca.conf to cert directory
   ansible.builtin.copy:
     src: ca.conf
     dest: "{{ cert_dir }}/ca.conf"
+  delegate_to: localhost
+  run_once: true
 
-- name: Generate CA key
+- name: Generate CA private key
   ansible.builtin.command:
     cmd: openssl genrsa -out ca.key 4096
     chdir: "{{ cert_dir }}"
-  args:
-    creates: "{{ cert_dir }}/ca.key"
+  delegate_to: localhost
+  run_once: true
 
 - name: Generate CA certificate
   ansible.builtin.command:
-    cmd: >
+    cmd: >-
       openssl req -x509 -new -sha512 -noenc
       -key ca.key -days 3653
       -config ca.conf -out ca.crt
     chdir: "{{ cert_dir }}"
-  args:
-    creates: "{{ cert_dir }}/ca.crt"
+  delegate_to: localhost
+  run_once: true

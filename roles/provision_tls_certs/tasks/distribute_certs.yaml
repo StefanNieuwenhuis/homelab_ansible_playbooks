@@ -1,42 +1,41 @@
-- name: Copy node certs to nodes
-  when: inventory_hostname in ['node-0', 'node-1']
-  block:
-    - name: Ensure kubelet directory exists
-      ansible.builtin.file:
-        path: /var/lib/kubelet/
-        state: directory
-        mode: '0755'
+- name: Ensure /var/lib/kubelet exists on nodes
+  ansible.builtin.file:
+    path: /var/lib/kubelet
+    state: directory
+    mode: '0755'
 
-    - name: Copy CA cert to node
-      ansible.builtin.copy:
-        src: "{{ cert_dir }}/ca.crt"
-        dest: /var/lib/kubelet/ca.crt
-        remote_src: yes
+- name: Copy CA cert to all nodes
+  ansible.builtin.copy:
+    src: "{{ cert_dir }}/ca.crt"
+    dest: /var/lib/kubelet/ca.crt
+    mode: '0644'
 
-    - name: Copy node cert
-      ansible.builtin.copy:
-        src: "{{ cert_dir }}/{{ inventory_hostname }}.crt"
-        dest: /var/lib/kubelet/kubelet.crt
-        remote_src: yes
+- name: Copy kubelet certs to node-0
+  when: inventory_hostname == "192.168.1.202"
+  ansible.builtin.copy:
+    src: "{{ cert_dir }}/node-0.{{ item }}"
+    dest: "/var/lib/kubelet/kubelet.{{ item }}"
+    mode: '0600'
+  loop: ["crt", "key"]
 
-    - name: Copy node key
-      ansible.builtin.copy:
-        src: "{{ cert_dir }}/{{ inventory_hostname }}.key"
-        dest: /var/lib/kubelet/kubelet.key
-        remote_src: yes
+- name: Copy kubelet certs to node-1
+  when: inventory_hostname == "192.168.1.203"
+  ansible.builtin.copy:
+    src: "{{ cert_dir }}/node-1.{{ item }}"
+    dest: "/var/lib/kubelet/kubelet.{{ item }}"
+    mode: '0600'
+  loop: ["crt", "key"]
 
-- name: Copy master certs to control plane node
-  when: inventory_hostname == 'server'
-  block:
-    - name: Copy master TLS files
-      ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "/root/"
-        remote_src: yes
-      loop:
-        - "{{ cert_dir }}/ca.key"
-        - "{{ cert_dir }}/ca.crt"
-        - "{{ cert_dir }}/kube-api-server.key"
-        - "{{ cert_dir }}/kube-api-server.crt"
-        - "{{ cert_dir }}/service-accounts.key"
-        - "{{ cert_dir }}/service-accounts.crt"
+- name: Copy control plane certs to server
+  when: inventory_hostname == "192.168.1.201"
+  ansible.builtin.copy:
+    src: "{{ cert_dir }}/{{ item }}"
+    dest: "~/{{ item }}"
+    mode: '0600'
+  loop:
+    - ca.crt
+    - ca.key
+    - kube-api-server.crt
+    - kube-api-server.key
+    - service-accounts.crt
+    - service-accounts.key

@@ -1,32 +1,29 @@
-- name: Ensure /var/lib/kubelet exists on nodes
+- name: Ensure /var/lib/kubelet exists on worker nodes
   ansible.builtin.file:
     path: /var/lib/kubelet
     state: directory
     mode: '0755'
-  loop: "{{ groups['cluster'] }}"
-  delegate_to: "{{ item.fqdn }}"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy CA cert to all nodes
   ansible.builtin.copy:
     src: "{{ cert_dir }}/ca.crt"
     dest: /var/lib/kubelet/ca.crt
     mode: '0644'
-  loop: "{{ groups['cluster'] }}"
-  delegate_to: "{{ item.fqdn }}"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
 
-- name: Copy kubelet certs to nodes dynamically
+- name: Copy kubelet certs to worker nodes
   ansible.builtin.copy:
-    src: "{{ cert_dir }}/{{ inventory_hostname }}.{{ item }}"
+    src: "{{ cert_dir }}/{{ hostvars[inventory_hostname]['hostname'] }}.{{ item }}"
     dest: "/var/lib/kubelet/kubelet.{{ item }}"
     mode: '0600'
   loop: ["crt", "key"]
-  when: "'node' in inventory_hostname"
-  delegate_to: "{{ inventory_hostname }}"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
 
-- name: Copy control plane certs to server
+- name: Copy control plane certs to server node
   ansible.builtin.copy:
     src: "{{ cert_dir }}/{{ item }}"
-    dest: "/etc/kubernetes/pki/{{ item }}"
+    dest: "~/{{ item }}"
     mode: '0600'
   loop:
     - ca.crt
@@ -35,5 +32,4 @@
     - kube-api-server.key
     - service-accounts.crt
     - service-accounts.key
-  when: "'server' in inventory_hostname"
-  delegate_to: "{{ inventory_hostname }}"
+  when: "'server' in hostvars[inventory_hostname]['hostname']"

@@ -3,22 +3,22 @@
     path: /var/lib/kubelet
     state: directory
     mode: '0755'
-  when: "'node' in hostvars[inventory_hostname]['hostname']"
+  when: "'node' in ansible_hostname"
 
 - name: Copy CA cert to all nodes
   ansible.builtin.copy:
     src: "{{ cert_dir }}/ca.crt"
     dest: /var/lib/kubelet/ca.crt
     mode: '0644'
-  when: "'node' in hostvars[inventory_hostname]['hostname']"
+  when: "'node' in ansible_hostname"
 
 - name: Copy kubelet certs to worker nodes
   ansible.builtin.copy:
-    src: "{{ cert_dir }}/{{ hostvars[inventory_hostname]['hostname'] }}.{{ item }}"
+    src: "{{ cert_dir }}/{{ ansible_hostname }}.{{ item }}"
     dest: "/var/lib/kubelet/kubelet.{{ item }}"
     mode: '0600'
   loop: ["crt", "key"]
-  when: "'node' in hostvars[inventory_hostname]['hostname']"
+  when: "'node' in ansible_hostname"
 
 - name: Copy control plane certs to server node
   ansible.builtin.copy:
@@ -32,4 +32,4 @@
     - kube-api-server.key
     - service-accounts.crt
     - service-accounts.key
-  when: "'server' in hostvars[inventory_hostname]['hostname']"
+  when: "'server' in ansible_hostname"

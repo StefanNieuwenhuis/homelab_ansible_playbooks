@@ -1,0 +1,7 @@
+- name: Create Host Lookup Table
+  ansible.builtin.copy:
+    content: |
+      # Kubernetes The Hard Way
+    dest: "/etc/hosts"
+    mode: '0644'
+  delegate_to: "{{ ansible_host }}"

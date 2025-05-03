@@ -1,0 +1,6 @@
+- name: Distribute TLS certificates to cluster nodes
+  hosts: cluster
+  become: true
+  gather_facts: false
+  roles:
+    - distribute_tls_certificates

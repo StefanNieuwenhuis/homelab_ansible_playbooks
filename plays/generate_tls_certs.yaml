@@ -1,0 +1,6 @@
+- name: Generate TLS certificates on localhost
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - generate_tls_certificates

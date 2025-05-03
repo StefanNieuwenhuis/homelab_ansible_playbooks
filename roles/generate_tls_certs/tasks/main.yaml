@@ -1,0 +1,18 @@
+- name: Ensure certificate directory exists
+  file:
+    path: "{{ cert_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Generate CA private key
+  ansible.builtin.command:
+    cmd: 'openssl genrsa -out ca.key 4096'
+    chdir: "{{ cert_dir }}"
+
+- name: Generate CA Certificate
+  ansible.builtin.command:
+    cmd: >-
+      openssl req -x509 -new -nodes
+      -key ca.key -subj "/CN=kubernetes-ca"
+      -days 10000 -out ca.crt
+    chdir: "{{ cert_dir }}"

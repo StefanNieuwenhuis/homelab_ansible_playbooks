@@ -3,3 +3,4 @@
     path: /var/lib/kubelet
     state: directory
     mode: '0755'
+  when: ansible_hostname != 'server'

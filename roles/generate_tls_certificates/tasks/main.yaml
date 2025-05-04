@@ -4,6 +4,11 @@
     state: directory
     mode: '0755'
 
+- name: Ensure ca.key does not exist
+  file:
+    path: "{{ cert_dir }}/ca.key"
+    state: absent
+
 - name: Generate CA private key
   ansible.builtin.command:
     cmd: openssl genrsa -out ca.key 4096

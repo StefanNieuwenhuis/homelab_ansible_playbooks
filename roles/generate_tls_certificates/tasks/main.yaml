@@ -24,11 +24,11 @@
     chdir: "{{ cert_dir }}"
   loop: "{{ certs }}"
   loop_control:
-    label: "{{ item.key }}"
+    label: "{{ item }}.key"
 
 - name: Generate Certificate Request for each Kubernetes component
   ansible.builtin.command:
-    cmd: "openssl req -new -key {{ item }}.key -sha256 -config \"ca.conf\" -section {{ item }} -out {{ item }}.csr"
+    cmd: "openssl req -new -key \"{{ item }}.key\" -sha256 -config \"ca.conf\" -section \"{{ item }}\" -out \"{{ item }}.csr\""
     chdir: "{{ cert_dir }}"
   loop: "{{ certs }}"
   loop_control:
@@ -36,12 +36,7 @@
 
 - name: Generate signed SSL Certificates for each Kubernetes component
   ansible.builtin.command:
-    cmd: "openssl x509 -req -days 3653 -in {{ item }}.csr \
-    -copy_extensions copyall \
-    -sha256 -CA ca.crt \
-    -CAkey ca.key \
-    -CAcreateserial \
-    -out {{ item }}.crt"
+    cmd: "openssl x509 -req -days 3653 -in \"{{ item }}.csr\" -copy_extensions copyall -sha256 -CA \"ca.crt\" -CAkey \"ca.key\" -CAcreateserial -out \"{{ item }}.crt\""
     chdir: "{{ cert_dir }}"
   loop: "{{ certs }}"
   loop_control:

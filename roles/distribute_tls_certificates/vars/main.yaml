@@ -1,5 +1,8 @@
-nodes:
-  - admin
-  - node-0
-  - node-1
+server_certs:
+  - ca.crt
+  - ca.key
+  - kube-api-server.crt
+  - kube-api-server.key
+  - service-accounts.crt
+  - service-accounts.key
 cert_dir: /var/lib/kubelet

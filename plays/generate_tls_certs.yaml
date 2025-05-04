@@ -3,5 +3,5 @@
   connection: local
   gather_facts: false
   roles:
-    - generate_tls_certificates
-      tags: ['generate_tls_certs']
+    - role: generate_tls_certificates
+      tags: [generate_tls_certs]

@@ -1,0 +1,5 @@
+- name: Ensure /var/lib/kubelet exists on worker nodes
+  ansible.builtin.file:
+    path: /var/lib/kubelet
+    state: directory
+    mode: '0755'

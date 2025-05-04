@@ -1,0 +1,5 @@
+nodes:
+  - admin
+  - node-0
+  - node-1
+cert_dir: /var/lib/kubelet

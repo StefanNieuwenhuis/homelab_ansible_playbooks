@@ -3,4 +3,5 @@
   become: true
   gather_facts: false
   roles:
-    - distribute_tls_certificates
+    - role: distribute_tls_certificates
+      tags: [distribute_tls_certs]

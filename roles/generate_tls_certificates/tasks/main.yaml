@@ -52,3 +52,4 @@
   ansible.builtin.debug:
     msg: "{{ item.filename }}"
   loop: "{{ cert_files.files }}"
+  when: item.filename is defined

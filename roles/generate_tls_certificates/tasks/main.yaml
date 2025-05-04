@@ -42,7 +42,13 @@
   loop_control:
     label: "{{ item }}.crs"
 
-- name: Show generated files
+- name: Find all generated .crt, .key, and .csr files
+  ansible.builtin.find:
+    paths: "{{ cert_dir }}"
+    patterns: "*.crt,*.key,*.csr"
+  register: cert_files
+
+- name: Show generated .crt, .key, and .csr files
   ansible.builtin.debug:
     msg: "{{ item.filename }}"
   loop: "{{ cert_files.files }}"

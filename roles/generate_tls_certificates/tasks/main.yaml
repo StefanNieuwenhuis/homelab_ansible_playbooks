@@ -41,3 +41,8 @@
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.crs"
+
+- name: Show generated files
+  ansible.builtin.debug:
+    msg: "{{ item.filename }}"
+  loop: "{{ cert_files.files }}"

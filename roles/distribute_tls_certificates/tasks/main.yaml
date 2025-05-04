@@ -19,6 +19,7 @@
     mode: '0600'
   loop: ["crt", "key"]
   when: "'node' in ansible_hostname"
+  delegate_to: localhost
 
 - name: Copy control plane certs to server node
   ansible.builtin.copy:

@@ -5,9 +5,17 @@
     mode: '0755'
   when: ansible_hostname != 'server'
 
-- name: Copy CA cert to all nodes
+- name: Copy CA cert to worker nodes
   ansible.builtin.copy:
     src: "{{ cert_dir }}/ca.crt"
     dest: "{{ cert_dir }}/ca.crt"
     mode: '0644'
+  when: ansible_hostname != 'server'
+
+- name: Copy kubelet certs to worker nodes
+  ansible.builtin.copy:
+    src: "{{ cert_dir }}/{{ ansible_hostname }}.{{ item }}"
+    dest: "{{ cert_dir }}/kubelet.{{ item }}"
+    mode: '0600'
+  loop: ["crt", "key"]
   when: ansible_hostname != 'server'

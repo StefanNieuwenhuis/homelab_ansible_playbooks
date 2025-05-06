@@ -1,3 +1,2 @@
 - name: Create a Self-Signed Certificate Authority
-  ansible.builtin.include_tasks:
-    file: generate_ca.yaml
+  import_tasks: generate_ca.yaml

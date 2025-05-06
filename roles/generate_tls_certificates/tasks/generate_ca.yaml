@@ -37,12 +37,20 @@
     creates: "{{ cert_dir }}/ca.crt"
 
 - name: Generate a RSA key for each Kubernetes component
-  ansible.builtin.command:
-    cmd: "openssl genrsa -out {{ item }}.key 4096"
+  ansible.builtin.command: openssl genrsa -out {{ item }}.key 4096
+  args:
     chdir: "{{ cert_dir }}"
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.key"
+
+- name: Generate a Certificate Signing Request (CSR) for each Kubernetes component
+  ansible.builtin.command: >
+    openssl req -new -key "{{ item }}.key" -sha256
+    -config "ca.conf" -section {{ item }}
+    -out "{{ item }}.csr"
+  args:
+    chdir: "{{ cert_dir }}"
 
 - name: Generate Certificate for each Kubernetes component
   ansible.builtin.command: >

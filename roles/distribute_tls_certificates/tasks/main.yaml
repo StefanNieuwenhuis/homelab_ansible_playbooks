@@ -3,34 +3,5 @@
     path: /var/lib/kubelet
     state: directory
     mode: '0755'
-  when: "'node' in ansible_hostname"
+  when: "'node' in (hostvars[inventory_hostname]['hostname'] | default(''))"
 
-- name: Copy CA cert to worker nodes
-  ansible.builtin.copy:
-    src: "{{ cert_dir }}/ca.crt"
-    dest: "{{ cert_dir }}/ca.crt"
-    mode: '0644'
-  when: "'node' in ansible_hostname"
-
-- name: Debug cert paths
-  ansible.builtin.debug:
-    msg: "Looking for: {{ cert_dir }}/{{ inventory_hostname }}.crt"
-  when: "'node' in inventory_hostname"
-  delegate_to: localhost
-
-- name: Copy kubelet certs to worker nodes
-  ansible.builtin.copy:
-    src: "{{ cert_dir }}/{{ inventory_hostname }}.{{ item }}"
-    dest: "/var/lib/kubelet/kubelet.{{ item }}"
-    mode: '0600'
-  loop: ["crt", "key"]
-  when: "'node' in inventory_hostname"
-  delegate_to: localhost
-
-- name: Copy control plane certs to server node
-  ansible.builtin.copy:
-    src: "{{ cert_dir }}/{{ item }}"
-    dest: "~/{{ item }}"
-    mode: '0600'
-  loop: "{{ server_certs }}"
-  when: "'server' in ansible_hostname"

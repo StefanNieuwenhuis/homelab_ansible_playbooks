@@ -8,3 +8,5 @@
   ansible.builtin.debug:
     msg: "{{ item.path | basename }}"
   loop: "{{ cert_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"

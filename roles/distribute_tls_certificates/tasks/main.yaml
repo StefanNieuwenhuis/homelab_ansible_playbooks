@@ -6,10 +6,9 @@
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy ca.crt to remote worker nodes
-  ansible.posix.synchronize:
+  ansible.builtin.copy:
     src: "{{ cert_dir_local }}/ca.crt"  # This is on the control node
     dest: "{{ cert_dir_remote }}/ca.crt"  # This is on the managed nodes
-    mode: push
-  delegate_to: localhost
-  become: true
+    mode: '0644'  # File permissions
+  become: true  # Use sudo privileges to write to the remote directory
   when: "'node' in hostvars[inventory_hostname]['hostname']"

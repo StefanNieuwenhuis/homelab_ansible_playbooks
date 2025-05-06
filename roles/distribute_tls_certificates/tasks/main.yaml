@@ -7,6 +7,6 @@
 
 - name: Copy ca.crt to remote worker nodes
   ansible.builtin.command:
-    cmd: "scp {{ cert_dir_remote }}/ca.crt {{ ansible_user }}@{{ inventory_hostname }}:{{ cert_dir }}/ca.crt"
+    cmd: "scp {{ cert_dir_remote }}/ca.crt {{ ansible_user }}@{{ hostvars[inventory_hostname]['hostname'] }}:{{ cert_dir }}/ca.crt"
   delegate_to: localhost
   when: "'node' in hostvars[inventory_hostname]['hostname']"

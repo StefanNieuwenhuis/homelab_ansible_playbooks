@@ -12,7 +12,7 @@
 
 - name: Ensure OpenSSL config exists
   ansible.builtin.stat:
-    path: ca.conf
+    path: "{{ cert_dir }}/ca.conf"
   register: ca_conf_stat
 
 - name: Fail if ca.conf is missing

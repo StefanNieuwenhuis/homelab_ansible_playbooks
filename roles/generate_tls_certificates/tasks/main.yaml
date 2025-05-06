@@ -1,2 +1,8 @@
 - name: Create a Self-Signed Certificate Authority
   import_tasks: generate_ca.yaml
+
+- name: Create RSA, CSR & CRT for each Kubernetes component
+  import_tasks: generate_certs.yaml
+
+- name: Display all CA, RSA, CSR & CRT
+  import_tasks: display_certs.yaml

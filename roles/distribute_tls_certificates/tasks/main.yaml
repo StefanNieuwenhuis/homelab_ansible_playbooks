@@ -5,9 +5,10 @@
     mode: '0755'
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
-- name: Copy Certificate to worker nodes
+- name: Copy ca.crt to remote worker nodes
   ansible.builtin.copy:
-    src: "{{ cert_dir }}/ca.crt"
-    dest: "{{ cert_dir_remote }}/ca.crt"
-  when: "'node' in hostvars[inventory_hostname]['hostname']"
+    src: "{{ cert_dir_remote }}/ca.crt"
+    dest: "{{ cert_dir }}/ca.crt"
+    mode: '0644'
+  when: "'node' in hostvars[inventory_hostname]['hostname'] | default('')"
   delegate_to: localhost

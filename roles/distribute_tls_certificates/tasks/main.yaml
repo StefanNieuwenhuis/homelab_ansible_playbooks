@@ -3,13 +3,13 @@
     path: "{{ cert_dir }}"
     state: directory
     mode: '0755'
-  when: "'node' in inventory_hostname"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy Certificate to worker nodes
   synchronize:
     src: "{{ cert_dir_remote }}/ca.crt"
     dest: "{{ cert_dir }}/ca.crt"
-  when: "'node' in inventory_hostname"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
   delegate_to: localhost
 
 

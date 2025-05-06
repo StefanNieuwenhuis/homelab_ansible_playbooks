@@ -4,20 +4,20 @@
     state: directory
     mode: '0755'
 
-- name: Generate a RSA private key
+- name: Generate the Root RSA private key
   ansible.builtin.command:
     cmd: openssl genrsa -out ca.key 4096
     chdir: "{{ cert_dir }}"
 
-- name: Generate a Root Certificate
+- name: Generate the Root Certificate
   ansible.builtin.command:
     cmd: openssl req -x509 -new -sha512 -noenc -key ca.key -days 3653 -config ca.conf -out ca.crt
     chdir: "{{ cert_dir }}"
 
-- name: Generate a RSA key for each Kubernetes component
-  ansible.builtin.command:
-    cmd: "openssl genrsa -out {{ item }}.key 4096"
-    chdir: "{{ cert_dir }}"
-  loop: "{{ certs }}"
-  loop_control:
-    label: "{{ item }}.key"
+# - name: Generate a RSA key for each Kubernetes component
+#   ansible.builtin.command:
+#     cmd: "openssl genrsa -out {{ item }}.key 4096"
+#     chdir: "{{ cert_dir }}"
+#   loop: "{{ certs }}"
+#   loop_control:
+#     label: "{{ item }}.key"

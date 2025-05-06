@@ -9,12 +9,14 @@
     cmd: openssl genrsa -out ca.key 4096
     chdir: "{{ cert_dir }}"
 
-- name: List ,crt, key and csr files
-  ansible.builtin.command:
-    cmd: ls -1 *.crt *.key *.csr
-    chdir: "{{ cert_dir }}"
-    register: directory_contents
+- name: Find all generated .crt, .key, and .csr files
+  ansible.builtin.find:
+    paths: "{{ cert_dir }}"
+    patterns: "*.crt,*.key,*.csr"
+  register: cert_files
 
-- name: Display directory contents
-  debug:
-    var: directory_contents.stdout_lines
+- name: Show generated .crt, .key, and .csr files
+  ansible.builtin.debug:
+    msg: "{{ item.filename }}"
+  loop: "{{ cert_files.files }}"
+  when: item.filename is defined

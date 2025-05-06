@@ -40,7 +40,7 @@
   ansible.builtin.command: openssl genrsa -out {{ item }}.key 4096
   args:
     chdir: "{{ cert_dir }}"
-  when: item.stat.exists == False
+    creates: "{{ cert_dir }}/{{ item }}.key"
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.key"
@@ -52,7 +52,7 @@
     -out "{{ item }}.csr"
   args:
     chdir: "{{ cert_dir }}"
-  when: item.stat.exists == False
+    creates: "{{ cert_dir }}/{{ item }}.csr"
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.csr"
@@ -65,7 +65,9 @@
     -CAkey "ca.key"
     -CAcreateserial
     -out "{{ item }}.crt"
-  when: item.stat.exists == False
+  args:
+    chdir: "{{ cert_dir }}"
+    creates: "{{ cert_dir }}/{{ item }}.crt"
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.crt"

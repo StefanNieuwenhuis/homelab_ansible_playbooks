@@ -5,10 +5,18 @@
     mode: '0755'
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
-- name: Copy ca.crt to remote worker nodes
+- name: Copy Root Certificate to remote worker nodes
   ansible.builtin.copy:
-    src: "{{ cert_dir_local }}/ca.crt"  # This is on the control node
-    dest: "{{ cert_dir_remote }}/ca.crt"  # This is on the managed nodes
-    mode: '0644'  # File permissions
-  become: true  # Use sudo privileges to write to the remote directory
+    src: "{{ cert_dir_local }}/ca.crt"
+    dest: "{{ cert_dir_remote }}/ca.crt"
+    mode: '0644'
+  become: true
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Copy Certificate to remote worker nodes
+  ansible.builtin.copy:
+    src: "{{ cert_dir_local }}/{{ hostvars[inventory_hostname]['hostname'] }}.crt"
+    dest: "{{ cert_dir_remote }}/{{ hostvars[inventory_hostname]['hostname'] }}.crt"
+    mode: '0644'
+  become: true
   when: "'node' in hostvars[inventory_hostname]['hostname']"

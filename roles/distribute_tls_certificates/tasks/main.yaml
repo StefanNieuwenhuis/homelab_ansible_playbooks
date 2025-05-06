@@ -9,22 +9,16 @@
   ansible.builtin.copy:
     src: "{{ cert_dir_local }}/ca.crt"
     dest: "{{ cert_dir_remote }}/ca.crt"
-    mode: '0644'
-  become: true
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy Certificate to remote worker nodes
   ansible.builtin.copy:
     src: "{{ cert_dir_local }}/{{ hostvars[inventory_hostname]['hostname'] }}.crt"
     dest: "{{ cert_dir_remote }}/kubelet.crt"
-    mode: '0644'
-  become: true
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy RSA Key to remote worker nodes
   ansible.builtin.copy:
     src: "{{ cert_dir_local }}/{{ hostvars[inventory_hostname]['hostname'] }}.key"
     dest: "{{ cert_dir_remote }}/kubelet.key"
-    mode: '0644'
-  become: true
   when: "'node' in hostvars[inventory_hostname]['hostname']"

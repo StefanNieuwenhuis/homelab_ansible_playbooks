@@ -4,9 +4,9 @@
     patterns: "*.crt,*.key,*.csr"
   register: cert_files
 
-- name: Show generated .crt, .key, and .csr filenames only
+- name: Show all generated cert files as a bullet list
   ansible.builtin.debug:
-    msg: "{{ item.path | basename }}"
-  loop: "{{ cert_files.files }}"
-  loop_control:
-    label: "{{ item.path | basename }}"
+    msg: |
+      {% for file in cert_files.files %}
+      - {{ file.path | basename }}
+      {% endfor %}

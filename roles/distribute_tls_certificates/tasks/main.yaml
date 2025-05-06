@@ -6,7 +6,8 @@
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy ca.crt to remote worker nodes
-  ansible.builtin.command:
-    cmd: "scp {{ cert_dir_remote }}/ca.crt {{ ansible_user }}@{{ hostvars[inventory_hostname]['hostname'] }}:{{ cert_dir }}/ca.crt"
+  ansible.builtin.command: "scp ca.crt {{ ssh_target_user }}@{{ hostvars[inventory_hostname]['hostname'] }}:{{ cert_dir }}/ca.crt"
+  args:
+    chdir: "{{ cert_dir }}"
   delegate_to: localhost
   when: "'node' in hostvars[inventory_hostname]['hostname']"

@@ -6,10 +6,7 @@
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy ca.crt to remote worker nodes
-  ansible.builtin.synchronize:
-    src: "{{ cert_dir_remote }}/ca.crt"
-    dest: "{{ cert_dir }}/ca.crt"
-    mode: push
-    transport: scp
+  ansible.builtin.command:
+    cmd: "scp {{ cert_dir_remote }}/ca.crt {{ ansible_user }}@{{ inventory_hostname }}:{{ cert_dir }}/ca.crt"
   delegate_to: localhost
   when: "'node' in hostvars[inventory_hostname]['hostname']"

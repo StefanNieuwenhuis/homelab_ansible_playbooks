@@ -5,4 +5,5 @@ server_certs:
   - kube-api-server.key
   - service-accounts.crt
   - service-accounts.key
-cert_dir: /var/lib/kubelet
+cert_dir: /var/lib/kubelet/
+cert_dir_remote: /etc/kubernetes/pki

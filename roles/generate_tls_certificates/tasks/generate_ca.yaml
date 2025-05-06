@@ -4,6 +4,22 @@
     state: directory
     mode: '0755'
 
+- name: Copy ca.conf to work dir
+  ansible.builtin.copy:
+    src: ca.conf
+    dest: "{{ cert_dir }}/ca.conf"
+    force: no
+
+- name: Ensure OpenSSL config exists
+  ansible.builtin.stat:
+    path: ca.conf
+  register: ca_conf_stat
+
+- name: Fail if ca.conf is missing
+  ansible.builtin.fail:
+    msg: "ca.conf file is missing. Please ensure it exists."
+  when: not ca_conf_stat.stat.exists
+
 - name: Generate the Root RSA private key
   ansible.builtin.command: openssl genrsa -out ca.key 4096
   args:

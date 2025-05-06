@@ -7,6 +7,14 @@
   loop_control:
     label: "{{ item }}.key"
 
+- name: CHMOD 644 all RSA keys
+  ansible.builtin.command: chmod 644 {{ item}}.key
+  args:
+    chdir: "{{ cert_dir }}"
+  loop: "{{ certs }}"
+  loop_control:
+    label: "{{ item }}.key"
+
 - name: Generate a Certificate Signing Request (CSR)
   ansible.builtin.command: >
     openssl req -new -key "{{ item }}.key" -sha256

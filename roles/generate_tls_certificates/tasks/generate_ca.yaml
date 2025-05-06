@@ -1,3 +1,9 @@
+- name: Ensure certificate directory exists
+  file:
+    path: "{{ cert_dir }}"
+    state: directory
+    mode: '0755'
+
 - name: Generate an RSA private key
   ansible.builtin.command:
     cmd: openssl genrsa -out ca.key 4096

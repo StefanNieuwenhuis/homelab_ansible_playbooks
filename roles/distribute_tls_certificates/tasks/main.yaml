@@ -6,10 +6,8 @@
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy Certificate to worker nodes
-  ansible.posix.synchronize:
+  ansible.builtin.copy:
     src: "{{ cert_dir_remote }}/ca.crt"
     dest: "{{ cert_dir }}/ca.crt"
-    mode: push
   when: "'node' in hostvars[inventory_hostname]['hostname']"
   delegate_to: localhost
-  become: true

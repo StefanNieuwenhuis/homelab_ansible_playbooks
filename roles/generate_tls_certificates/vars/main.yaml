@@ -7,4 +7,6 @@ certs:
   - kube-controller-manager
   - kube-api-server
   - service-accounts
-cert_dir: /etc/kubernetes/pki
+cert_dir: /var/lib/kubelet/
+cert_dir_remote: /etc/kubernetes/pki
+

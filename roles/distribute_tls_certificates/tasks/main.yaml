@@ -1,7 +1,13 @@
 - name: Ensure /var/lib/kubelet exists on worker nodes
   ansible.builtin.file:
-    path: /var/lib/kubelet
+    path: "{{ cert_dir }}
     state: directory
     mode: '0755'
   when: "'node' in (hostvars[inventory_hostname]['hostname'] | default(''))"
+
+- name: Copy Certificate to worker nodes
+  synchronize:
+    src: "{{ cert_dir_remote }}/ca.crt"
+    dest: "{{ cert_dir }}/ca.crt"
+  delegate_to: localhost
 

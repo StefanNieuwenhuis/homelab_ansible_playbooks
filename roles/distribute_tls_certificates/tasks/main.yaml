@@ -21,4 +21,5 @@
   ansible.builtin.copy:
     src: "{{ cert_dir_local }}/{{ hostvars[inventory_hostname]['hostname'] }}.key"
     dest: "{{ cert_dir_remote }}/kubelet.key"
+    mode: push
   when: "'node' in hostvars[inventory_hostname]['hostname']"

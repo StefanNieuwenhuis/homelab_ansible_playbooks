@@ -4,15 +4,37 @@
     state: directory
     mode: '0755'
 
+- name: Ensure OpenSSL config exists
+  ansible.builtin.stat:
+    path: ca.conf
+  register: ca_conf_stat
+
+- name: Fail if ca.conf is missing
+  ansible.builtin.fail:
+    msg: "ca.conf file is missing. Please ensure it exists."
+  when: not ca_conf_stat.stat.exists
+
+- name: Copy ca.conf
+  ansible.builtin.copy:
+    src: ca.conf
+    dest: "{{ cert_dir }}/ca.conf"
+    force: no
+
 - name: Generate the Root RSA private key
-  ansible.builtin.command:
-    cmd: openssl genrsa -out ca.key 4096
+  ansible.builtin.command: openssl genrsa -out ca.key 4096
+  args:
     chdir: "{{ cert_dir }}"
+  creates: "{{ cert_dir }}/ca.key"
 
 - name: Generate the Root Certificate
-  ansible.builtin.command:
-    cmd: openssl req -x509 -new -sha512 -noenc -key ca.key -days 3653 -config ca.conf -out ca.crt
+  ansible.builtin.command: >
+    openssl req -x509 -new -sha512 -noenc
+    -key ca.key -days 3653
+    -config ca.conf
+    -out ca.crt
+  args:
     chdir: "{{ cert_dir }}"
+  creates: "{{ cert_dir }}/ca.crt"
 
 # - name: Generate a RSA key for each Kubernetes component
 #   ansible.builtin.command:

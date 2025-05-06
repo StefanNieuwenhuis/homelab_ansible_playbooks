@@ -40,6 +40,7 @@
   ansible.builtin.command: openssl genrsa -out {{ item }}.key 4096
   args:
     chdir: "{{ cert_dir }}"
+  when: item.stat.exists == False
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.key"
@@ -51,6 +52,10 @@
     -out "{{ item }}.csr"
   args:
     chdir: "{{ cert_dir }}"
+  when: item.stat.exists == False
+  loop: "{{ certs }}"
+  loop_control:
+    label: "{{ item }}.csr"
 
 - name: Generate Certificate for each Kubernetes component
   ansible.builtin.command: >
@@ -60,6 +65,7 @@
     -CAkey "ca.key"
     -CAcreateserial
     -out "{{ item }}.crt"
+  when: item.stat.exists == False
   loop: "{{ certs }}"
   loop_control:
     label: "{{ item }}.crt"

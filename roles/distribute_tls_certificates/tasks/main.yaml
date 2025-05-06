@@ -23,3 +23,12 @@
     dest: "{{ cert_dir_remote }}/kubelet.key"
     mode: '0600'
   when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+
+- name: Copy Certificates and Private Keys to Server
+  ansible.builtin.copy:
+    src: "{{ cert_dir_local }}/{{ item }}"
+    dest: "~/"
+    mode: '0600'
+  loop: "{{ server_certs }}"
+  when: "'server' in hostvars[inventory_hostname]['hostname']"

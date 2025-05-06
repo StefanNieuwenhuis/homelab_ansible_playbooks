@@ -24,7 +24,7 @@
   ansible.builtin.command: openssl genrsa -out ca.key 4096
   args:
     chdir: "{{ cert_dir }}"
-  creates: "{{ cert_dir }}/ca.key"
+    creates: "{{ cert_dir }}/ca.key"
 
 - name: Generate the Root Certificate
   ansible.builtin.command: >

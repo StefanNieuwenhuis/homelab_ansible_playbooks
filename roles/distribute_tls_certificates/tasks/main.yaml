@@ -12,3 +12,4 @@
     mode: push
   when: "'node' in hostvars[inventory_hostname]['hostname']"
   delegate_to: localhost
+  become: true

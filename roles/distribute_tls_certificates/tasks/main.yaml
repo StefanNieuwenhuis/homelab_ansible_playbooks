@@ -7,7 +7,10 @@
 
 - name: Copy ca.crt to remote worker nodes
   ansible.builtin.copy:
-    src: "{{ cert_dir_remote }}/ca.crt"
-    dest: "{{ cert_dir }}/ca.crt"
-  when: "'node' in hostvars[inventory_hostname]['hostname']"
+    src: "{{ cert_dir_remote }}/ca.crt"  # The path on localhost
+    dest: /var/lib/kubelet/ca.crt       # The path on the remote worker node
+    owner: root
+    group: root
+    mode: '0644'
   delegate_to: localhost
+  when: "'node' in hostvars[inventory_hostname]['hostname']"

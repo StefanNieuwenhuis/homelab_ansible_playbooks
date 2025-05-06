@@ -1,6 +1,6 @@
 - name: Ensure /var/lib/kubelet exists on worker nodes
   ansible.builtin.file:
-    path: "{{ cert_dir }}"
+    path: "{{ cert_dir_remote }}"
     state: directory
     mode: '0755'
   when: "'node' in hostvars[inventory_hostname]['hostname']"

@@ -35,6 +35,7 @@
   ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
+    remote_src: true
   loop:
     - { src: "/home/{{ ssh_target_user }}/ca.crt", dest: "/etc/etcd/ca.crt" }
     - { src: "/home/{{ ssh_target_user }}/kube-api-server.key", dest: "/etc/etcd/kube-api-server.key" }

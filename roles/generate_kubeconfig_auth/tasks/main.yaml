@@ -14,7 +14,7 @@
 - name: CHMOD 644 all RSA keys
   ansible.builtin.command: chmod 644 {{ item }}.kubeconfig
   args:
-    chdir: "{{ cert_dir }}"
+    chdir: "{{ work_dir }}"
   loop: "{{ nodes }}"
   loop_control:
     label: "{{ item }}.kubeconfig"

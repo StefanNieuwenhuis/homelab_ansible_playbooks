@@ -1,6 +1,6 @@
 - name: Download etcd {{ kubernetes.components.etcd.version }} tarball
   ansible.builtin.get_url:
-    url: "https://github.com/coreos/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
+    url: "https://github.com/etcd-io/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
     dest: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
     mode: '0644'
 
@@ -9,6 +9,27 @@
     src: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
     dest: /tmp/
     remote_src: yes
+
+- name: Move etcd files
+  ansible.builtin.copy:
+    src: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64/{{item}}"
+    dest: "/usr/local/bin/{{item}}"
+    remote_src: yes
+    mode: 0544
+  with_items:
+  - etcd
+  - etcdctl
+
+- name: create /etc/etcd directory
+  ansible.builtin.file:
+    path: /etc/etcd
+    state: directory
+
+- name: create /var/lib/etcd directory
+  ansible.builtin.file:
+    path: /var/lib/etcd
+    state: directory
+    mode: 0700
 
 # - name: Remove downloaded etcd archive
 #   ansible.builtin.file:

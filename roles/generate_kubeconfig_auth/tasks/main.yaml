@@ -15,7 +15,7 @@
   ansible.builtin.command: chmod 644 {{ item }}.kubeconfig
   args:
     chdir: "{{ cert_dir }}"
-  loop: "{{ certs }}"
+  loop: "{{ nodes }}"
   loop_control:
     label: "{{ item }}.kubeconfig"
 

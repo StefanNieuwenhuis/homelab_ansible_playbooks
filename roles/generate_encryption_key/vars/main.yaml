@@ -1,2 +1,2 @@
 encryption_config_dir: /etc/kubernetes/pki
-
+work_dir_local: /etc/kubernetes/pki

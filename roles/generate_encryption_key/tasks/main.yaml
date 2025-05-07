@@ -13,7 +13,9 @@
 
 - name: Copy encryption config to server
   ansible.builtin.copy:
-    src: "{{ encryption_config_dir }}/encryption-config.yaml"
+    src: "{{ work_dir_local }}/{{ item }}.yaml"
     dest: "/home/{{ ssh_target_user }}"
     mode: '0600'
+  loop:
+    - encryption-config
   when: "'server' in hostvars[inventory_hostname]['hostname']"

@@ -1,0 +1,14 @@
+- name: Generate an encryption key
+  ansible.builtin.command: export ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
+
+- name: Generate the encryption config file
+  ansible.builtin.command: envsubst < encryption-config.yaml > {{ encryption_config_dir }}/encryption-config.yaml
+  args:
+    creates: encryption-config.yaml
+
+- name: Copy encryption config to server
+  ansible.builtin.copy:
+    src: "{{ encryption_config_dir }}/encryption-config.yaml"
+    dest: "/home/{{ ssh_target_user }}"
+    mode: '0600'
+  when: "'server' in hostvars[inventory_hostname]['hostname']"

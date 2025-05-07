@@ -20,8 +20,7 @@
     dest: "{{ kubelet_dir_remote }}/kubeconfig/{{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig"
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
-
-- name: Copy Certificates and Private Keys to Server
+- name: Copy kubeconfigs to server
   ansible.builtin.copy:
     src: "{{ work_dir_local }}/{{ item }}.kubeconfig"
     dest: "/home/{{ ssh_target_user }}"

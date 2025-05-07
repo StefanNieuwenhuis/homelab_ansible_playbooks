@@ -3,3 +3,4 @@ kubernetes:
   components:
     etcd:
       version: v3.6.0-rc.3
+  version: v1.32.3

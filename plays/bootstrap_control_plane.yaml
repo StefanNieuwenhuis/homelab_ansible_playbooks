@@ -1,0 +1,7 @@
+- name: Bootstrap Kubernetes Control Plane
+  hosts: servers
+  become: true
+  gather_facts: false
+  roles:
+    - role: bootstrap_control_plane
+      tags: [bootstrap_control_plane]

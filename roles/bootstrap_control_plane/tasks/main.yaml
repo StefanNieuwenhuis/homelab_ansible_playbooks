@@ -1,0 +1,29 @@
+- name: Create Kubernetes Directory /etc/kubernetes/config/
+  ansible.builtin.file:
+    path: /etc/kubernetes/config/
+    state: directory
+    mode: '0755'
+
+- name: Create Kubernetes Directory /var/lib/kubernetes/
+  ansible.builtin.file:
+    path: /var/lib/kubernetes/
+    state: directory
+    mode: '0755'
+
+- name: Create kubectl directory
+  ansible.builtin.file:
+    path: /root/.kube/
+    state: directory
+    mode: '0755'
+
+- name: Download Kubernetes server {{ kubernetes.version }} tarball
+  ansible.builtin.get_url:
+    src: https://dl.k8s.io/{{ kubernetes.version }}/kubernetes-server-linux-amd64.tar.gz
+    dest: /opt/
+    mode: '0644'
+
+- name: Extract etcd tarball into /tmp
+  ansible.builtin.unarchive:
+    src: /opt/kubernetes-server-linux-amd64.tar.gz
+    dest: /opt/
+    remote_src: yes

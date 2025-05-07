@@ -18,12 +18,11 @@
 
 - name: Download Kubernetes server {{ kubernetes.version }} tarball
   ansible.builtin.get_url:
-    src: https://dl.k8s.io/{{ kubernetes.version }}/kubernetes-server-linux-amd64.tar.gz
+    src: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
     dest: /opt/
     mode: '0644'
-
-- name: Extract etcd tarball into /tmp
-  ansible.builtin.unarchive:
-    src: /opt/kubernetes-server-linux-amd64.tar.gz
-    dest: /opt/
-    remote_src: yes
+  loop:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kubectl

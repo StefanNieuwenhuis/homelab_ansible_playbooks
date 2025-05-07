@@ -1,5 +1,5 @@
 - name: Download and Extract etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz into /tmp/
   ansible.builtin.unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz
+    src: https://github.com/coreos/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz
     dest: /tmp/
     remote_src: yes

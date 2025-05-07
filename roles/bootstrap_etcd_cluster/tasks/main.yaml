@@ -1,5 +1,16 @@
-- name: Download and Extract etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz into /tmp/
+- name: Download etcd {{ kubernetes.components.etcd.version }} tarball
+  ansible.builtin.get_url:
+    url: "https://github.com/coreos/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
+    dest: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
+    mode: '0644'
+
+- name: Extract etcd tarball into /tmp
   ansible.builtin.unarchive:
-    src: https://github.com/coreos/etcd/releases/download/{{ kubernetes.components.etcd.version }}/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz
+    src: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
     dest: /tmp/
     remote_src: yes
+
+# - name: Remove downloaded etcd archive
+#   ansible.builtin.file:
+#     path: "/tmp/etcd-{{ kubernetes.components.etcd.version }}-linux-amd64.tar.gz"
+#     state: absent

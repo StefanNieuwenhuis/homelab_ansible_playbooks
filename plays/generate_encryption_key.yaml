@@ -1,5 +1,5 @@
 - name: Generate and Distribute Encryption Key
-  hosts: localhost
+  hosts: cluster
   become: true
   connection: local
   gather_facts: false

@@ -10,6 +10,5 @@
 - name: Copy encryption config to server
   ansible.builtin.copy:
     src: "{{ encryption_config_dir }}/encryption-config.yaml"
-    dest: "/home/{{ ssh_target_user }}/encryption-config.yaml"
+    dest: "/home/{{ ssh_target_user }}"
     mode: '0600'
-  delegate_to: 192.168.1.201

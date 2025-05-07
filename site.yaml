@@ -4,3 +4,4 @@
 - import_playbook: plays/generate_tls_certs.yaml
 - import_playbook: plays/distribute_tls_certs.yaml
 - import_playbook: plays/generate_kubeconfig_auth.yaml
+- import_playbook: plays/distribute_kubeconfig_auth.yaml

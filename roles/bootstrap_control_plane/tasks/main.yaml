@@ -42,6 +42,7 @@
   ansible.builtin.file:
     path: "/home/{{ ssh_target_user }}/{{ item }}"
     state: absent
+  loop: "{{ certs }}"
 
 - name: create kubernetes service files
   ansible.builtin.copy:

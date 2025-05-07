@@ -1,10 +1,40 @@
-- name: Generate Kubeconfig files for worker nodes
+- name: Set Cluster Entry for worker nodes
   ansible.builtin.shell: >
     kubectl config set-cluster {{ cluster_name }}
     --certificate-authority=ca.crt
     --embed-certs=true
     --server={{ server_url }}:{{ server_port }}
     --kubeconfig={{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  delegate_to: localhost
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Set credentials
+  ansible.builtin.shell: >
+    kubectl config set-credentials system:node:{{ hostvars[inventory_hostname]['hostname'] }}
+    --client-certificate={{ hostvars[inventory_hostname]['hostname'] }}.crt
+    --client-key={{ hostvars[inventory_hostname]['hostname'] }}.key
+    --embed-certs=true
+    --kubeconfig={{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  delegate_to: localhost
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Set Default Context
+  ansible.builtin.shell: >
+    kubectl config set-context default
+    --cluster={{ cluster_name }}
+    --user=system:node:{{ hostvars[inventory_hostname]['hostname'] }}
+    --kubeconfig={{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  delegate_to: localhost
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Use Default Context
+  ansible.builtin.command: kubectl config use-context default --kubeconfig={{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig
   args:
     chdir: "{{ work_dir }}"
   delegate_to: localhost

@@ -32,7 +32,7 @@
     mode: 0700
 
 - name: Copy certificates to the etcd Server
-  ansible.builtin.copy:
+  ansible.builtin.file:
     src: "/home/{{ ssh_target_user }}/{{ item }}"
     dest: /etc/etcd/
   loop:

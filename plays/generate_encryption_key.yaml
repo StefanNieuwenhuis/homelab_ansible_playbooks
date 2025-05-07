@@ -1,5 +1,5 @@
 - name: Generate TLS certificates on localhost
-  hosts: localhost
+  hosts: cluster
   become: true
   connection: local
   gather_facts: false

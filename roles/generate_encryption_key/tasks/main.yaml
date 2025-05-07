@@ -7,7 +7,7 @@
     msg: "Encryption key is {{ encryption_key.stdout }}"
 
 - name: Generate the encryption config file
-  ansible.builtin.command: envsubst < encryption-config.yaml > {{ encryption_config_dir }}/encryption-config.yaml
+  ansible.builtin.shell: envsubst < encryption-config.yaml > {{ encryption_config_dir }}/encryption-config.yaml
   args:
     creates: encryption-config.yaml
 

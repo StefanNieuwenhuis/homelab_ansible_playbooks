@@ -16,12 +16,24 @@
     state: directory
     mode: '0755'
 
-- name: Download Kubernetes server {{ kubernetes.version }} tarball
+- name: Download Kubernetes server {{ kubernetes.version }} binaries
   ansible.builtin.get_url:
     url: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
     dest: /opt/
     mode: '0644'
   loop:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kubectl
+
+- name: Install Kubernetes binaries
+  ansible.builtin.copy:
+    src: "/opt/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    remote_src: true
+  loop:
+    loop:
     - kube-apiserver
     - kube-controller-manager
     - kube-scheduler

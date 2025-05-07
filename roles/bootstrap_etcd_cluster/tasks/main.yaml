@@ -20,16 +20,25 @@
   - etcd
   - etcdctl
 
-- name: create /etc/etcd directory
+- name: Create /etc/etcd directory
   ansible.builtin.file:
     path: /etc/etcd
     state: directory
 
-- name: create /var/lib/etcd directory
+- name: Create /var/lib/etcd directory
   ansible.builtin.file:
     path: /var/lib/etcd
     state: directory
     mode: 0700
+
+- name: Copy certificates to the etcd Server
+  ansible.builtin.copy:
+    src: "/home/{{ ssh_target_user }}/{{ item }}"
+    dest: /etc/etcd/
+  loop:
+    - ca.crt
+    - kube-api-server.key
+    - kube-api-server.crt
 
 # - name: Remove downloaded etcd archive
 #   ansible.builtin.file:

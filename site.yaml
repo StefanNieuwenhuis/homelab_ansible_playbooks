@@ -3,3 +3,4 @@
 - import_playbook: plays/add_host_entries.yaml
 - import_playbook: plays/generate_tls_certs.yaml
 - import_playbook: plays/distribute_tls_certs.yaml
+- import_playbook: plays/generate_kubeconfig_auth.yaml

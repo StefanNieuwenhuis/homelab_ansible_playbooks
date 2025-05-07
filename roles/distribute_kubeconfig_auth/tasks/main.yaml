@@ -4,8 +4,8 @@
     state: directory
     mode: '0755'
   loop:
-    - "{{ proxy_dir_remote }}"
-    - "{{ kubelet_dir_remote }}"
+    - "{{ proxy_dir_remote }}/kubeconfig"
+    - "{{ kubelet_dir_remote }}/kubeconfig"
   when: "'node' in hostvars[inventory_hostname]['hostname']"
 
 - name: Copy kube-proxy config to remote worker nodes

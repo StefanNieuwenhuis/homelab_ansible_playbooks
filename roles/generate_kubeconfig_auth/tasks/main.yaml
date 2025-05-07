@@ -9,7 +9,15 @@
     chdir: "{{ work_dir }}"
   loop: "{{ nodes }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item }}.kubeconfig"
+
+- name: CHMOD 644 all RSA keys
+  ansible.builtin.command: chmod 644 {{ item }}.kubeconfig
+  args:
+    chdir: "{{ cert_dir }}"
+  loop: "{{ certs }}"
+  loop_control:
+    label: "{{ item }}.kubeconfig"
 
 - name: Set credentials
   ansible.builtin.shell: >
@@ -22,7 +30,7 @@
     chdir: "{{ work_dir }}"
   loop: "{{ nodes }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item }}.kubeconfig"
 
 - name: Set Default Context
   ansible.builtin.shell: >
@@ -34,7 +42,7 @@
     chdir: "{{ work_dir }}"
   loop: "{{ nodes }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item }}.kubeconfig"
 
 - name: Use Default Context
   ansible.builtin.command: kubectl config use-context default --kubeconfig={{ item }}.kubeconfig
@@ -42,4 +50,4 @@
     chdir: "{{ work_dir }}"
   loop: "{{ nodes }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item }}.kubeconfig"

@@ -1,0 +1,7 @@
+server_configs:
+  - admin
+  - kube-controller-manager
+  - kube-scheduler
+work_dir_local: /etc/kubernetes/pki
+proxy_dir_remote: /var/lib/kube-proxy
+kubelet_dir_remote: /var/lib/kubelet

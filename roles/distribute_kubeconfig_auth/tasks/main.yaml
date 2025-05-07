@@ -1,0 +1,30 @@
+- name: Ensure kube-proxy and kubelet directories exist on worker nodes
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ proxy_dir_remote }}"
+    - "{{ kubelet_dir_remote }}"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Copy kube-proxy config to remote worker nodes
+  ansible.builtin.copy:
+    src: "{{ work_dir_local }}/kube-proxy.kubeconfig"
+    dest: "{{ proxy_dir_remote }}/kubeconfig/kube-proxy.kubeconfig"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+- name: Copy kubelet config to remote worker nodes
+  ansible.builtin.copy:
+    src: "{{ work_dir_local }}/{{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig"
+    dest: "{{ kubelet_dir_remote }}/kubeconfig/{{ hostvars[inventory_hostname]['hostname'] }}.kubeconfig"
+  when: "'node' in hostvars[inventory_hostname]['hostname']"
+
+
+- name: Copy Certificates and Private Keys to Server
+  ansible.builtin.copy:
+    src: "{{ work_dir_local }}/{{ item }}.kubeconfig"
+    dest: "/home/{{ ssh_target_user }}"
+    mode: '0600'
+  loop: "{{ server_configs }}"
+  when: "'server' in hostvars[inventory_hostname]['hostname']"

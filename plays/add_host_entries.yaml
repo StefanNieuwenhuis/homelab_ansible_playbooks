@@ -1,5 +1,6 @@
 - name: Add Host Entries to jumpbox, server and worker nodes
   hosts: cluster
   become: true
+  gather_facts: false
   roles:
     - add_host_entries

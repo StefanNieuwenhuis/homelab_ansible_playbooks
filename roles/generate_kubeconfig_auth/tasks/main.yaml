@@ -1,5 +1,5 @@
 - name: Generate Kubeconfig files for worker nodes
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     kubectl config set-cluster {{ cluster_name }}
     --certificate-authority=ca.crt
     --embed-certs=true

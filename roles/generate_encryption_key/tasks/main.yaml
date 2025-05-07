@@ -12,4 +12,4 @@
     src: "{{ encryption_config_dir }}/encryption-config.yaml"
     dest: "/home/{{ ssh_target_user }}"
     mode: '0600'
-  delegate_to: "{{ hostvars['server'].hostname }}"
+  delegate_to: 192.168.1.201

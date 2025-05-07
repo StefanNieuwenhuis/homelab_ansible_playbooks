@@ -18,7 +18,7 @@
 
 - name: Download Kubernetes server {{ kubernetes.version }} tarball
   ansible.builtin.get_url:
-    src: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
+    url: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
     dest: /opt/
     mode: '0644'
   loop:

@@ -21,20 +21,11 @@
     url: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
     dest: /opt/
     mode: '0644'
-  loop:
-    - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
-    - kubectl
+  loop: "{{ binaries }}"
 
 - name: Install Kubernetes binaries
   ansible.builtin.copy:
     src: "/opt/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     remote_src: true
-  loop:
-    loop:
-    - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
-    - kubectl
+  loop: "{{ binaries }}"

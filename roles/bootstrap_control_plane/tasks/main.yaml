@@ -28,4 +28,12 @@
     src: "/opt/{{ item }}"
     dest: "/usr/local/bin/{{ item }}"
     remote_src: true
+    mode: a+x
   loop: "{{ binaries }}"
+
+- name: Copy certificates to the Control Plane
+  ansible.builtin.copy:
+    src: "/home/{{ ssh_target_user }}"
+    dest: /var/lib/kubernetes
+    remote_src: true
+  loop: "{{ certs }}"

@@ -1,6 +1,10 @@
 nodes:
+  - admin
   - node-0
   - node-1
+  - kube-proxy
+  - kube-controller-manager
+  - kube-scheduler
 cluster_name: kubernetes-the-hard-way
 work_dir: /etc/kubernetes/pki
 server_url: https://server.kubernetes.local

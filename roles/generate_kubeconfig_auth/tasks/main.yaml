@@ -1,5 +1,45 @@
-- name: Generate kubeconfig files for worker nodes
-  import_tasks: generate_kubeconfig_workers.yaml
+- name: Set Cluster Entry
+  ansible.builtin.shell: >
+    kubectl config set-cluster {{ cluster_name }}
+    --certificate-authority=ca.crt
+    --embed-certs=true
+    --server={{ server_url }}:{{ server_port }}
+    --kubeconfig={{ item }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  loop: "{{ nodes }}"
+  loop_control:
+    label: "{{ item }}"
 
-- name: Generate kubeconfig files for the kube-proxy service
-  import_tasks: generate_kubeconfig_proxy.yaml
+- name: Set credentials
+  ansible.builtin.shell: >
+    kubectl config set-credentials system:node:{{ item }}
+    --client-certificate={{ item }}.crt
+    --client-key={{ item }}.key
+    --embed-certs=true
+    --kubeconfig={{ item }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  loop: "{{ nodes }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Set Default Context
+  ansible.builtin.shell: >
+    kubectl config set-context default
+    --cluster={{ cluster_name }}
+    --user=system:node:{{ item }}
+    --kubeconfig={{ item }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  loop: "{{ nodes }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Use Default Context
+  ansible.builtin.command: kubectl config use-context default --kubeconfig={{ item }}.kubeconfig
+  args:
+    chdir: "{{ work_dir }}"
+  loop: "{{ nodes }}"
+  loop_control:
+    label: "{{ item }}"

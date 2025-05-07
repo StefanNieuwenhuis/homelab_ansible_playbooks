@@ -1,0 +1,5 @@
+kubernetes:
+  cluster_name: kubernetes-the-hard-way
+  components:
+    etcd:
+      version: v3.6.0-rc.3

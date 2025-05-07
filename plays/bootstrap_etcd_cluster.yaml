@@ -1,0 +1,7 @@
+- name: Bootstrap etcd Cluster
+  hosts: servers
+  become: true
+  gather_facts: false
+  roles:
+    - role: bootstrap_etcd_cluster
+      tags: [bootstrap_etcd_cluster]

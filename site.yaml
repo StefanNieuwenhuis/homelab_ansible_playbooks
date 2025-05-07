@@ -7,3 +7,4 @@
 - import_playbook: plays/distribute_kubeconfig_auth.yaml
 - import_playbook: plays/distribute_kubeconfig_auth.yaml
 - import_playbook: plays/generate_encryption_key.yaml
+- import_playbook: plays/bootstrap_etcd_cluster.yaml

@@ -32,13 +32,13 @@
     mode: 0700
 
 - name: Copy certificates to the etcd Server
-  ansible.builtin.file:
-    src: "/home/{{ ssh_target_user }}/{{ item }}"
-    dest: /etc/etcd/
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   loop:
-    - ca.crt
-    - kube-api-server.key
-    - kube-api-server.crt
+    - { src: "/home/{{ ssh_target_user }}/ca.crt", dest: "/etc/etcd/ca.crt" }
+    - { src: "/home/{{ ssh_target_user }}/kube-api-server.key", dest: "/etc/etcd/kube-api-server.key" }
+    - { src: "/home/{{ ssh_target_user }}/kube-api-server.crt", dest: "/etc/etcd/kube-api-server.crt" }
 
 # - name: Remove downloaded etcd archive
 #   ansible.builtin.file:

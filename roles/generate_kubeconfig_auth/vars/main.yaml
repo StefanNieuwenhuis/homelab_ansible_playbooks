@@ -1,0 +1,4 @@
+cluster_name: kubernetes-the-hard-way
+work_dir: /etc/kubernetes/pki
+server_url: https://server.kubernetes.local
+server_port: 6443

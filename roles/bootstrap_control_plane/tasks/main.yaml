@@ -37,3 +37,13 @@
     dest: /var/lib/kubernetes/
     remote_src: true
   loop: "{{ certs }}"
+
+- name: Remove certificates from root
+  ansible.builtin.file:
+    path: "/home/{{ ssh_target_user }}/{{ item }}"
+    state: absent
+
+- name: create kubernetes service files
+  ansible.builtin.copy:
+    src: kube-apiserver.service
+    dest: /etc/systemd/system/

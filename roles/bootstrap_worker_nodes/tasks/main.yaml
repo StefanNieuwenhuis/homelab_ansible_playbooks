@@ -36,7 +36,7 @@
 # Download, Extract, and Install Binaries
 ##################################################
 
-- name: Download {{ item.name }}
+- name: "Download {{ item.name }}""
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: /opt/
@@ -53,7 +53,7 @@
 
 - name: Delete local {{ item.name }}
   ansible.builtin.file:
-    path: "/opt/{{ item }}"
+    path: "/opt/{{ item.name }}"
     state: absent
   loop: "{{ binaries }}"
 

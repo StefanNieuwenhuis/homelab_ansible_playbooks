@@ -1,4 +1,14 @@
-- name: Create the system:kube-apiserver-to-kubelet ClusterRole
+- name: Copy kube-apiserver-to-kubelet.yaml to remote host
+  ansible.builtin.copy:
+    src: kube-apiserver-to-kubelet.yaml
+    dest: /tmp/kube-apiserver-to-kubelet.yaml
+
+- name: Apply kube-apiserver-to-kubelet ClusterRole
   ansible.builtin.shell: >
-    kubectl apply -f kube-apiserver-to-kubelet.yaml
+    kubectl apply -f /tmp/kube-apiserver-to-kubelet.yaml
     --kubeconfig /home/{{ ssh_target_user }}/admin.kubeconfig
+
+- name: Remove kube-apiserver-to-kubelet.yaml from remote host
+  ansible.builtin.file:
+    path: /tmp/kube-apiserver-to-kubelet.yaml
+    state: absent

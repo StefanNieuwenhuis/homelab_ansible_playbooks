@@ -1,3 +1,8 @@
+dependencies:
+  - socat
+  - conntrack
+  - ipset
+  - kmod
 configs:
   - kubelet-config.yaml
   - kube-proxy-config.yaml
@@ -7,3 +12,19 @@ services:
   - containerd.service
   - kubelet.service
   - kube-proxy.service
+
+binaries:
+  kubernetes_server:
+    - kubectl
+    - kubelet
+    - kube-proxy
+
+# binaries:
+#   - containerd
+#   - containerd-shim-runc-v2
+#   - containerd-stress
+#   - crictl
+#   - ctr
+#   - kubelet
+#   - kube-proxy
+#   - runc

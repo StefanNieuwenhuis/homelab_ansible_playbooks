@@ -1,4 +1,4 @@
-- name: create required directory
+- name: create required directories
   file:
     path: "{{ item }}"
     state: directory
@@ -13,6 +13,12 @@
     - /etc/kubernetes/manifests
     - /etc/containerd
 
+- name: Install OS Dependencies
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: yes
+  loop: "{{ dependencies }}"
+
 - name: Set node subnet from inventory
   ansible.builtin.set_fact:
     node_subnet: "{{ hostvars[inventory_hostname].pod_cidr }}"
@@ -26,22 +32,49 @@
     group: root
     mode: '0644'
 
-- name: Download cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
+##################################################
+# Download, Extract, and Install Binaries
+##################################################
+
+- name: Download Kubernetes server {{ kubernetes.version }} binaries
   ansible.builtin.get_url:
-    url: https://github.com/containernetworking/plugins/releases/download/{{ kubernetes.components.cni.version }}/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
+    url: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
     dest: /opt/
     mode: '0644'
+  loop: "{{ binaries.kubernetes_server }}"
 
-- name: Extract cni-plugins tarball
-  ansible.builtin.unarchive:
-    src: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
-    dest: /opt/cni/bin/
-    remote_src: yes
+- name: Install Kubernetes binaries
+  ansible.builtin.copy:
+    src: "/opt/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    remote_src: true
+    mode: a+x
+  loop: "{{ binaries.kubernetes_server }}"
 
-- name: Delete cni-plugins tarball
+- name: Remove local file
   ansible.builtin.file:
-    path: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
+    path: "/opt/{{ item }}"
     state: absent
+  loop: "{{ binaries.kubernetes_server }}"
+
+# - name: Download cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
+#   ansible.builtin.get_url:
+#     url: https://github.com/containernetworking/plugins/releases/download/{{ kubernetes.components.cni.version }}/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
+#     dest: /opt/
+#     mode: '0644'
+
+# - name: Extract cni-plugins tarball
+#   ansible.builtin.unarchive:
+#     src: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
+#     dest: /opt/cni/bin/
+#     remote_src: yes
+
+# - name: Delete cni-plugins tarball
+#   ansible.builtin.file:
+#     path: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
+#     state: absent
+
+
 
 # - name: Copy Kubelet configs
 #   ansible.builtin.copy:

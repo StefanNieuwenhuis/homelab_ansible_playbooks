@@ -44,7 +44,7 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: Extract {{ item.name }}
+- name: Extract Binaries
   ansible.builtin.unarchive:
     src: /opt/
     dest: "{{ item.dest }}"
@@ -54,6 +54,18 @@
   loop_control:
     label: "{{ item.name }}"
   when: item.archive is defined
+
+- name: Copy Binaries
+  ansible.builtin.copy:
+    src: "/opt/{{ item.name }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: a+x
+  loop: "{{ binaries }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.archive is not defined
 
 - name: Delete local {{ item.name }}
   ansible.builtin.file:

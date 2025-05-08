@@ -76,7 +76,7 @@
     dest: /var/lib/kubernetes/
   loop: "{{ kubeconfig_check.results }}"
   loop_control:
-    label: "{{ item.item }}"
+    label: "{{ item.item }}.kubeconfig"
   when: item.stat.exists
 
 - name: Remove kubeconfigs from root
@@ -85,7 +85,7 @@
     state: absent
   loop: "{{ kubeconfig_check.results }}"
   loop_control:
-    label: "{{ item.item }}"
+    label: "{{ item.item }}.kubeconfig"
   when: item.stat.exists
 
 - name: Copy kube scheduler config

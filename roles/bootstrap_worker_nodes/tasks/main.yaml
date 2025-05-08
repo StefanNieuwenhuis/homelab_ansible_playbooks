@@ -11,10 +11,24 @@
     group: root
     mode: '0644'
 
-- name: Copy kubelet config
+- name: Copy Kubelet configs
   ansible.builtin.copy:
-    src: kubelet-config.yaml
-    dest: "/home/{{ ssh_target_user }}/kubelet-config.yaml"
+    src: "{{ item }}"
+    dest: "/home/{{ ssh_target_user }}/"
     owner: root
     group: root
     mode: '0644'
+  loop: "{{ configs }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Copy Kubelet services
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/home/{{ ssh_target_user }}/"
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ services }}"
+  loop_control:
+    label: "{{ item }}"

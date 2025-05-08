@@ -1,0 +1,9 @@
+configs:
+  - kubelet-config.yaml
+  - kube-proxy-config.yaml
+  - 99-loopback.conf
+  - containerd-config.toml
+services:
+  - containerd.service
+  - kubelet.service
+  - kube-proxy.service

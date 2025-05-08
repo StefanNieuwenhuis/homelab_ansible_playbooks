@@ -18,10 +18,8 @@ binaries:
   - { name: "kubelet", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kubelet", dest: "/usr/local/bin/" }
   - { name: "kube-proxy", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kube-proxy", dest: "/usr/local/bin/" }
   - { name: "crictl-{{kubernetes.components.crictl.version}}-linux-amd64.tar.gz", url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{kubernetes.components.crictl.version}}/crictl-{{kubernetes.components.crictl.version}}-linux-amd64.tar.gz", dest: "/usr/local/bin/", archive: true }
-  - { name: "runc.amd64", url: "https://github.com/opencontainers/runc/releases/download/{{kubernetes.components.runc.version}}/runc.amd64", dest: "/usr/local/bin/" }
-  - { name: "containerd-{{kubernetes.components.containerd.version}}-linux-amd64.tar.gz", url: "https://github.com/containerd/containerd/releases/download/v{{kubernetes.components.containerd.version}}/containerd-{{kubernetes.components.containerd.version}}-linux-amd64.tar.gz", dest: "/bin/", archive: true }
-  # - { name: "containerd-shim-runc-v2", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kube-proxy", dest: "/usr/local/bin/" }
-  # - { name: "containerd-stress", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kube-proxy", dest: "/usr/local/bin/" }
+  - { name: "runc", url: "https://github.com/opencontainers/runc/releases/download/{{kubernetes.components.runc.version}}/runc.amd64", dest: "/usr/local/bin/" }
+  - { name: "containerd-{{kubernetes.components.containerd.version}}-linux-amd64.tar.gz", url: "https://github.com/containerd/containerd/releases/download/v{{kubernetes.components.containerd.version}}/containerd-{{kubernetes.components.containerd.version}}-linux-amd64.tar.gz", dest: "/", archive: true }
 
 
 kubernetes_server:

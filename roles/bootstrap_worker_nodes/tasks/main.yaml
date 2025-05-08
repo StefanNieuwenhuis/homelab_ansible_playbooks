@@ -68,7 +68,7 @@
     label: "{{ item.name }}"
   when: item.archive is not defined
 
-- name: Delete local {{ item.name }}
+- name: Delete downloads (cleanup)
   ansible.builtin.file:
     path: "/opt/{{ item.name }}"
     state: absent

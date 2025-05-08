@@ -64,7 +64,7 @@
 
 - name: Check if kubeconfigs exist
   ansible.builtin.stat:
-    path: "/home/{{ ssh_target_user }}/{{ item }}"
+    path: "/home/{{ ssh_target_user }}/{{ item }}.kubeconfig"
   register: kubeconfig_check
   loop:
     - kube-controller-manager
@@ -86,7 +86,7 @@
   loop: "{{ kubeconfig_check.results }}"
   loop_control:
     label: "{{ item.item }}.kubeconfig"
-  when: item.stat.exists
+  when: item.stat.exists == true
 
 - name: Copy kube scheduler config
   ansible.builtin.copy:

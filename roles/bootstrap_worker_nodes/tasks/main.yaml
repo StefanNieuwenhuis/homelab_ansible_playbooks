@@ -1,7 +1,7 @@
 - name: Set node subnet from inventory
   ansible.builtin.set_fact:
     node_subnet: "{{ hostvars[inventory_hostname].pod_cidr }}"
-  when: hostvars[inventory_hostname].subnet is defined
+  when: hostvars[inventory_hostname].pod_cidr is defined
 
 - name: Render 10-bridge.conf
   ansible.builtin.template:

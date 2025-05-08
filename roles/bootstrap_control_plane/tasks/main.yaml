@@ -43,6 +43,8 @@
     dest: /var/lib/kubernetes/
     remote_src: true
   loop: "{{ cert_check.results }}"
+  loop_control:
+    label: "{{ item.item }}"
   when: item.stat.exists
 
 - name: Remove certificates from root
@@ -50,14 +52,15 @@
     path: "/home/{{ ssh_target_user }}/{{ item.item }}"
     state: absent
   loop: "{{ cert_check.results }}"
+  loop_control:
+    label: "{{ item.item }}"
   when: item.stat.exists
 
 - name: Copy service files
   ansible.builtin.copy:
     src: "{{ item }}.service"
     dest: /etc/systemd/system/
-  loop:
-    - service_files
+  loop: "{{ service_files }}"
 
 - name: Copy kubeconfigs
   ansible.builtin.copy:
@@ -86,10 +89,7 @@
     state: restarted
     daemon_reload: yes
     enabled: yes
-  loop:
-    - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
+  loop: "{{ service_files }}"
 
 - name: Setup cronjob to restart master daily
   cron:

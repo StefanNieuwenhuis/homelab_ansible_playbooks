@@ -49,7 +49,7 @@
     mode: a+x
     remote_src: yes
   loop: "{{ binaries }}"
-  when: item.archive == true
+  when: item.archive is defined
 
 - name: Delete local {{ item.name }}
   ansible.builtin.file:

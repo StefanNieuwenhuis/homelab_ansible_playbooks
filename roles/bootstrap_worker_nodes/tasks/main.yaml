@@ -19,19 +19,6 @@
     update_cache: yes
   loop: "{{ dependencies }}"
 
-- name: Set node subnet from inventory
-  ansible.builtin.set_fact:
-    node_subnet: "{{ hostvars[inventory_hostname].pod_cidr }}"
-  when: hostvars[inventory_hostname].pod_cidr is defined
-
-- name: Render 10-bridge.conf
-  ansible.builtin.template:
-    src: 10-bridge.conf.j2
-    dest: "/home/{{ ssh_target_user }}/10-bridge.conf"
-    owner: root
-    group: root
-    mode: '0644'
-
 ##################################################
 # Download, Extract, and Install Binaries
 ##################################################
@@ -80,25 +67,104 @@
   loop_control:
     label: "{{ item.name }}"
 
+##################################################
+# Bridge Network Configuration
+##################################################
 
-# - name: Copy Kubelet configs
-#   ansible.builtin.copy:
-#     src: "{{ item }}"
-#     dest: "/home/{{ ssh_target_user }}/"
-#     owner: root
-#     group: root
-#     mode: '0644'
-#   loop: "{{ configs }}"
-#   loop_control:
-#     label: "{{ item }}"
+- name: Set node subnet from inventory
+  ansible.builtin.set_fact:
+    node_subnet: "{{ hostvars[inventory_hostname].pod_cidr }}"
+  when: hostvars[inventory_hostname].pod_cidr is defined
 
-# - name: Copy Kubelet services
-#   ansible.builtin.copy:
-#     src: "{{ item }}"
-#     dest: "/home/{{ ssh_target_user }}/"
-#     owner: root
-#     group: root
-#     mode: '0644'
-#   loop: "{{ services }}"
-#   loop_control:
-#     label: "{{ item }}"
+- name: Render 10-bridge.conf
+  ansible.builtin.template:
+    src: 10-bridge.conf.j2
+    dest: /etc/cni/net.d/10-bridge.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy loopback configuration
+  ansible.builtin.copy:
+    src: 99-loopback.conf
+    dest: /etc/cni/net.d/99-loopback.conf
+
+- name: Add the br_netfilter module
+  ansible.builtin.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Process CNI Bridge Crossing Traffic by IP Tables
+  ansible.builtin.shell: >
+    echo "net.bridge.bridge-nf-call-iptables = 1"
+    >> /etc/sysctl.d/kubernetes.conf
+    echo "net.bridge.bridge-nf-call-ip6tables = 1"
+    >> /etc/sysctl.d/kubernetes.conf
+    sysctl -p /etc/sysctl.d/kubernetes.conf
+
+##################################################
+# Containerd Configuration
+##################################################
+
+- name: Copy containerd config
+  ansible.builtin.copy:
+    src: containerd-config.toml
+    dest: /etc/containerd/config.toml
+
+- name: Copy containerd service
+  ansible.builtin.copy:
+    src: containerd.service
+    dest: /etc/systemd/system/
+
+##################################################
+# Kubelet Configuration
+##################################################
+
+- name: Copy kubelet config
+  ansible.builtin.copy:
+    src: kubelet-config.yaml
+    dest: /var/lib/kubelet/
+
+- name: Copy kubelet service
+  ansible.builtin.copy:
+    src: kubelet.service
+    dest: /etc/systemd/system/
+
+##################################################
+# Kubernetes Proxy Configuration
+##################################################
+
+- name: Copy kube proxy config
+  ansible.builtin.copy:
+    src: kube-proxy-config.yaml
+    dest: /var/lib/kube-proxy/
+
+- name: Copy kube proxy service
+  ansible.builtin.copy:
+    src: kube-proxy.service
+    dest: /etc/systemd/system/
+
+##################################################
+# Restart Services
+##################################################
+
+- name: Restart containerd
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: restart kubelet
+  ansible.builtin.systemd:
+    name: kubelet
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+
+- name: restart kube-proxy
+  ansible.builtin.systemd:
+    name: kube-proxy
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

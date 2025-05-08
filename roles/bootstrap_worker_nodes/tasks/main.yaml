@@ -89,18 +89,20 @@
     src: 99-loopback.conf
     dest: /etc/cni/net.d/99-loopback.conf
 
-- name: Add the br_netfilter module
-  ansible.builtin.modprobe:
-    name: br_netfilter
-    state: present
 
-- name: Process CNI Bridge Crossing Traffic by IP Tables
+
+- name: Process CNI Bridge Crossing Traffic by IP4 Tables
   ansible.builtin.shell: >
     echo "net.bridge.bridge-nf-call-iptables = 1"
     >> /etc/sysctl.d/kubernetes.conf
+
+- name: Process CNI Bridge Crossing Traffic by IP6 Tables
+  ansible.builtin.shell: >
     echo "net.bridge.bridge-nf-call-ip6tables = 1"
     >> /etc/sysctl.d/kubernetes.conf
-    sysctl -p /etc/sysctl.d/kubernetes.conf
+
+- name: Reload sysctl
+  ansible.builtin.shell: sysctl -p /etc/sysctl.d/kubernetes.conf
 
 ##################################################
 # Containerd Configuration

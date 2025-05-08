@@ -56,6 +56,9 @@
     label: "{{ item.name }}"
   when: item.archive is defined
 
+- name: Rename runc.amd64
+  ansible.builtin.command: mv /opt/runc.amd64 /opt/runc
+
 - name: Copy Binaries
   ansible.builtin.copy:
     src: "/opt/{{ item.name }}"

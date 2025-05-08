@@ -46,7 +46,7 @@
 
 - name: Extract Binaries
   ansible.builtin.unarchive:
-    src: /opt/
+    src: "/opt/{{ item.name }}"
     dest: "{{ item.dest }}"
     mode: a+x
     remote_src: yes

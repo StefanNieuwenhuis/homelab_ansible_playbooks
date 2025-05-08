@@ -50,6 +50,7 @@
     dest: "{{ item.dest }}"
     mode: a+x
     remote_src: yes
+    extra_opts: [--strip-components=1]
   loop: "{{ binaries }}"
   loop_control:
     label: "{{ item.name }}"

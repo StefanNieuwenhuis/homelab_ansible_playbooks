@@ -56,6 +56,8 @@
     path: "/opt/{{ item.name }}"
     state: absent
   loop: "{{ binaries }}"
+  loop_control:
+    label: "{{ item }}"
 
 
 # - name: Copy Kubelet configs

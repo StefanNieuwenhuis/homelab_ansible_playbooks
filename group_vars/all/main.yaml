@@ -5,6 +5,8 @@ kubernetes:
       version: v3.6.0-rc.3
     cni:
       version: v1.6.2
+    containerd:
+      version: 2.1.0-beta.0
     crictl:
       version: v1.32.0
     runc:

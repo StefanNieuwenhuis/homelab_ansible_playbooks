@@ -1,0 +1,7 @@
+- name: Bootstrap Kubernetes Worker Nodes
+  hosts: workers
+  become: true
+  gather_facts: false
+  roles:
+    - role: bootstrap_worker_nodes
+      tags: [bootstrap_worker_nodes]

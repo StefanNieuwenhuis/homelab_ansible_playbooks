@@ -99,7 +99,7 @@
 
 - name: Download containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz
   ansible.builtin.get_url:
-    url: https://github.com/containerd/containerd/releases/download/{{ kubernetes.components.containerd.version }}/containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz
+    url: https://github.com/containerd/containerd/releases/download/v{{ kubernetes.components.containerd.version }}/containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz
     dest: /opt/
     mode: a+x
 

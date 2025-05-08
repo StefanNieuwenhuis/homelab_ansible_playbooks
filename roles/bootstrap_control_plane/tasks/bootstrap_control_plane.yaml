@@ -83,7 +83,7 @@
   ansible.builtin.file:
     path: "/home/{{ ssh_target_user }}/{{ item.item }}.kubeconfig"
     state: absent
-  loop: "{{ cert_check.results }}"
+  loop: "{{ kubeconfig_check.results }}"
   loop_control:
     label: "{{ item.item }}"
   when: item.stat.exists

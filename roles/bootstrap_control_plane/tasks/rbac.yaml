@@ -1,5 +1,4 @@
 - name: Create the system:kube-apiserver-to-kubelet ClusterRole
-  kubernetes.core.k8s:
-    state: present
-    kubeconfig: "/home/{{ ssh_target_user }}/admin.kubeconfig"
-    src: kube-apiserver-to-kubelet.yaml
+  ansible.builtin.shell: |
+    kubectl apply -f {{ kube-apiserver-to-kubelet.yaml }}
+    --kubeconfig /home/{{ ssh_target_user }}/admin.kubeconfig

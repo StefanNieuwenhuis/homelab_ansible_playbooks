@@ -36,7 +36,7 @@
 # Download, Extract, and Install Binaries
 ##################################################
 
-- name: "Download Binary
+- name: Download Binaries
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: /opt/

@@ -3,7 +3,10 @@ binaries:
   - kube-controller-manager
   - kube-scheduler
   - kubectl
-
+service_files:
+  - kube-apiserver
+  - kube-controller-manager
+  - kube-scheduler
 certs:
   - ca.crt
   - ca.key

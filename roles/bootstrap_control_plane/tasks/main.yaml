@@ -44,7 +44,39 @@
     state: absent
   loop: "{{ certs }}"
 
-- name: create kubernetes service files
+- name: Copy service files
   ansible.builtin.copy:
-    src: kube-apiserver.service
+    src: "{{ item }}.service"
     dest: /etc/systemd/system/
+  loop:
+    - service_files
+
+- name: Copy kubeconfigs
+  ansible.builtin.copy:
+    src: "{{ item }}.kubeconfig"
+    dest: /var/lib/kubernetes/
+  loop:
+    - kube-controller-manager
+    - kube-scheduler
+
+- name: Copy kube scheduler config
+  ansible.builtin.copy:
+    src: kube-scheduler.yaml
+    dest: /etc/kubernetes/config/
+
+- name: Restart kube-apiserver, -controller-manager & -scheduler
+  systemd:
+    name: "{{ item }}"
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
+  loop:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
+- name: Setup cronjob to restart master daily
+  cron:
+    name: "restart-master"
+    special_time: daily
+    job: "systemctl restart kube-apiserver kube-controller-manager kube-scheduler"

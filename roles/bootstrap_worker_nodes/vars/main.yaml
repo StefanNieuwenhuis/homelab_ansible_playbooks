@@ -14,11 +14,15 @@ services:
   - kube-proxy.service
 
 binaries:
-  kubernetes_server:
-    - kubectl
-    - kubelet
-    - kube-proxy
+  - { name: "kubectl", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kubectl", dest: "/usr/local/bin/" }
+  - { name: "kubelet", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kubelet", dest: "/usr/local/bin/" }
+  - { name: "kube-proxy", url: "https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/kube-proxy", dest: "/usr/local/bin/" }
 
+
+kubernetes_server:
+  - kubectl
+  - kubelet
+  - kube-proxy
 # binaries:
 #   - containerd
 #   - containerd-shim-runc-v2

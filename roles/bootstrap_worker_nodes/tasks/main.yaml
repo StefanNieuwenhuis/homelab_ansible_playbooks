@@ -36,83 +36,26 @@
 # Download, Extract, and Install Binaries
 ##################################################
 
-- name: Download Kubernetes server {{ kubernetes.version }} binaries
+- name: Download {{ item.name }}
   ansible.builtin.get_url:
-    url: https://dl.k8s.io/{{ kubernetes.version }}/bin/linux/amd64/{{ item }}
+    url: "{{ item.url }}"
     dest: /opt/
-    mode: '0644'
-  loop: "{{ binaries.kubernetes_server }}"
+  loop: "{{ binaries }}"
 
-- name: Install Kubernetes binaries
-  ansible.builtin.copy:
-    src: "/opt/{{ item }}"
-    dest: "/usr/local/bin/{{ item }}"
-    remote_src: true
+- name: Extract {{ item.name }}
+  ansible.builtin.unarchive:
+    src: /opt/
+    dest: "{{ item.dest }}"
     mode: a+x
-  loop: "{{ binaries.kubernetes_server }}"
+    remote_src: yes
+  loop: "{{ binaries }}"
+  when: item.archive == true
 
-- name: Remove local file
+- name: Delete local {{ item.name }}
   ansible.builtin.file:
     path: "/opt/{{ item }}"
     state: absent
-  loop: "{{ binaries.kubernetes_server }}"
-
-- name: Download cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
-  ansible.builtin.get_url:
-    url: https://github.com/containernetworking/plugins/releases/download/{{ kubernetes.components.cni.version }}/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz
-    dest: /opt/
-    mode: a+x
-
-- name: Extract cni-plugins tarball
-  ansible.builtin.unarchive:
-    src: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
-    dest: /opt/cni/bin/
-    remote_src: yes
-
-- name: Delete cni-plugins tarball
-  ansible.builtin.file:
-    path: "/opt/cni-plugins-linux-amd64-{{ kubernetes.components.cni.version }}.tgz"
-    state: absent
-
-- name: Download crictl-{{ kubernetes.components.crictl.version }}-linux-amd64.tar.gz
-  ansible.builtin.get_url:
-    url: https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ kubernetes.components.crictl.version }}/crictl-{{ kubernetes.components.crictl.version }}-linux-amd64.tar.gz
-    dest: /opt/
-    mode: a+x
-
-- name: Extract cri-tools tarball
-  ansible.builtin.unarchive:
-    src: "/opt/crictl-{{ kubernetes.components.crictl.version }}-linux-amd64.tar.gz"
-    dest: /usr/local/bin/
-    remote_src: yes
-
-- name: Delete cri-tools tarball
-  ansible.builtin.file:
-    path: "/opt/crictl-{{ kubernetes.components.crictl.version }}-linux-amd64.tar.gz"
-    state: absent
-
-- name: Download runc
-  ansible.builtin.get_url:
-    url: https://github.com/opencontainers/runc/releases/download/{{ kubernetes.components.runc.version }}/runc.amd64
-    dest: /usr/local/bin/runc
-    mode: a+x
-
-- name: Download containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz
-  ansible.builtin.get_url:
-    url: https://github.com/containerd/containerd/releases/download/v{{ kubernetes.components.containerd.version }}/containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz
-    dest: /opt/
-    mode: a+x
-
-- name: Extract containerd tarball
-  ansible.builtin.unarchive:
-    src: "/opt/containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz"
-    dest: /opt/containerd/
-    remote_src: yes
-
-- name: Delete containerd tarball
-  ansible.builtin.file:
-    path: "/opt/containerd-{{ kubernetes.components.containerd.version }}-linux-amd64.tar.gz"
-    state: absent
+  loop: "{{ binaries }}"
 
 
 # - name: Copy Kubelet configs

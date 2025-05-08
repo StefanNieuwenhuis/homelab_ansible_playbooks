@@ -36,11 +36,13 @@
 # Download, Extract, and Install Binaries
 ##################################################
 
-- name: "Download {{ item.name }}""
+- name: "Download Binary
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: /opt/
   loop: "{{ binaries }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Extract {{ item.name }}
   ansible.builtin.unarchive:
@@ -49,6 +51,8 @@
     mode: a+x
     remote_src: yes
   loop: "{{ binaries }}"
+  loop_control:
+    label: "{{ item.name }}"
   when: item.archive is defined
 
 - name: Delete local {{ item.name }}
@@ -57,7 +61,7 @@
     state: absent
   loop: "{{ binaries }}"
   loop_control:
-    label: "{{ item }}"
+    label: "{{ item.name }}"
 
 
 # - name: Copy Kubelet configs

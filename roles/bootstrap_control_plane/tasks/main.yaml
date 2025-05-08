@@ -31,7 +31,7 @@
     mode: a+x
   loop: "{{ binaries }}"
 
-- name: Check if certificate exists
+- name: Check if certificates exist
   ansible.builtin.stat:
     path: "/home/{{ ssh_target_user }}/{{ item }}"
   register: cert_check
@@ -62,21 +62,31 @@
     dest: /etc/systemd/system/
   loop: "{{ service_files }}"
 
-- name: Copy kubeconfigs
-  ansible.builtin.copy:
-    src: "{{ item }}.kubeconfig"
-    dest: /var/lib/kubernetes/
+- name: Check if kubeconfigs exist
+  ansible.builtin.stat:
+    path: "/home/{{ ssh_target_user }}/{{ item }}"
+  register: kubeconfig_check
   loop:
     - kube-controller-manager
     - kube-scheduler
 
+- name: Copy kubeconfigs
+  ansible.builtin.copy:
+    src: "/home/{{ ssh_target_user }}/{{ item.item }}.kubeconfig"
+    dest: /var/lib/kubernetes/
+  loop: "{{ kubeconfig_check.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stat.exists
+
 - name: Remove kubeconfigs from root
   ansible.builtin.file:
-    path: "/home/{{ ssh_target_user }}/{{ item }}.kubeconfig"
+    path: "/home/{{ ssh_target_user }}/{{ item.item }}.kubeconfig"
     state: absent
-  loop:
-    - kube-controller-manager
-    - kube-scheduler
+  loop: "{{ cert_check.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.stat.exists
 
 - name: Copy kube scheduler config
   ansible.builtin.copy:

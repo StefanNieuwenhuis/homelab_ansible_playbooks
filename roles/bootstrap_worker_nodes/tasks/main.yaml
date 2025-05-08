@@ -62,6 +62,7 @@
     owner: root
     group: root
     mode: a+x
+    remote_src: yes
   loop: "{{ binaries }}"
   loop_control:
     label: "{{ item.name }}"
